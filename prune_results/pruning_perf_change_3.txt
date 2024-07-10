@@ -1,0 +1,1 @@
+{"model": "yolov8n.pt", "cfg": "my_test_cfg.yaml", "prune_method": "group_sl", "reg": 0.0005, "global_pruning": false, "iterative_steps": 10, "target_prune_rate": 0.8, "max_map_drop": 0.8, "epochs": 10, "log_level": "INFO", "sparsity_learning": true}

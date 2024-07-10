@@ -1,5 +1,6 @@
 # This code is adapted from Issue [#147](https://github.com/VainF/Torch-Pruning/issues/147), implemented by @Hyunseok-Kim0.
 import argparse
+from functools import partial
 import math
 import os
 from copy import deepcopy
@@ -430,6 +431,78 @@ def train_v2(self, trainer=None, pruning=False, **kwargs):
         self.overrides = self.model.args
         self.metrics = getattr(self.trainer.validator, 'metrics', None)
 
+def setup_pruner(args):
+    args.sparsity_learning = False
+    if args.prune_method == "random":
+        imp = tp.importance.RandomImportance()
+        pruner_entry = partial(tp.pruner.MagnitudePruner, global_pruning=args.global_pruning)
+    elif args.prune_method == "l1":
+        imp = tp.importance.MagnitudeImportance(p=1)
+        pruner_entry = partial(tp.pruner.MagnitudePruner, global_pruning=args.global_pruning)
+    elif args.prune_method == "l2":
+        imp = tp.importance.MagnitudeImportance(p=2)
+        pruner_entry = partial(tp.pruner.MagnitudePruner, global_pruning=args.global_pruning)
+    elif args.prune_method == "fpgm":
+        imp = tp.importance.FPGMImportance(p=2)
+        pruner_entry = partial(tp.pruner.MagnitudePruner, global_pruning=args.global_pruning)
+    elif args.prune_method == "obdc":
+        imp = tp.importance.OBDCImportance(group_reduction='mean', num_classes=args.num_classes)
+        pruner_entry = partial(tp.pruner.MagnitudePruner, global_pruning=args.global_pruning)
+    elif args.prune_method == "lamp":
+        imp = tp.importance.LAMPImportance(p=2)
+        pruner_entry = partial(tp.pruner.MagnitudePruner, global_pruning=args.global_pruning)
+    elif args.prune_method == "slim":
+        args.sparsity_learning = True
+        imp = tp.importance.BNScaleImportance()
+        pruner_entry = partial(tp.pruner.BNScalePruner, reg=args.reg, global_pruning=args.global_pruning)
+    elif args.prune_method == "group_slim":
+        args.sparsity_learning = True
+        imp = tp.importance.BNScaleImportance()
+        pruner_entry = partial(tp.pruner.BNScalePruner, reg=args.reg, global_pruning=args.global_pruning, group_lasso=True)
+    elif args.prune_method == "group_norm":
+        imp = tp.importance.GroupNormImportance(p=2)
+        pruner_entry = partial(tp.pruner.GroupNormPruner, global_pruning=args.global_pruning)
+    elif args.prune_method == "group_sl":
+        args.sparsity_learning = True
+        imp = tp.importance.GroupNormImportance(p=2, normalizer='max') # normalized by the maximum score for CIFAR
+        pruner_entry = partial(tp.pruner.GroupNormPruner, reg=args.reg, global_pruning=args.global_pruning)
+    elif args.prune_method == "growing_reg":
+        args.sparsity_learning = True
+        imp = tp.importance.GroupNormImportance(p=2)
+        pruner_entry = partial(tp.pruner.GrowingRegPruner, reg=args.reg, delta_reg=args.delta_reg, global_pruning=args.global_pruning)
+    else:
+        raise NotImplementedError
+    pruner_entry = partial(pruner_entry, importance=imp)
+    #args.is_accum_importance = is_accum_importance
+    # unwrapped_parameters = []
+    # ignored_layers = []
+    # pruning_ratio_dict = {}
+    # # ignore output layers
+    # for m in model.modules():
+    #     if isinstance(m, torch.nn.Linear) and m.out_features == args.num_classes:
+    #         ignored_layers.append(m)
+    #     elif isinstance(m, torch.nn.modules.conv._ConvNd) and m.out_channels == args.num_classes:
+    #         ignored_layers.append(m)
+    
+    # Here we fix iterative_steps=200 to prune the model progressively with small steps 
+    # until the required speed up is achieved.
+    # pruner = pruner_entry(
+    #     model,
+    #     example_inputs,
+    #     importance=imp,
+    #     iterative_steps=args.iterative_steps,
+    #     # pruning_ratio=1.0,
+    #     # pruning_ratio_dict=pruning_ratio_dict,
+    #     max_pruning_ratio=args.max_pruning_ratio,
+    #     # ignored_layers=ignored_layers,
+    #     # unwrapped_parameters=unwrapped_parameters,
+    # )
+    return pruner_entry
+
+def fixed_step_scheduler(pruning_ratio_dict, steps):
+    # prune same ratio of filter based on initial size
+    pruning_ratio = 1 - math.pow((1 - args.target_prune_rate), 1 / args.iterative_steps)
+    return [pruning_ratio * pruning_ratio_dict for i in range(steps)]
 
 def prune(args):
     # load trained yolov8 model
@@ -486,19 +559,27 @@ def prune(args):
 
         ignored_layers = []
         unwrapped_parameters = []
+        pruning_ratio_dict = {}
         for m in model.model.modules():
             if isinstance(m, (Detect,)):
                 ignored_layers.append(m)
 
+        pruner = setup_pruner(args)
         example_inputs = example_inputs.to(model.device)
-        pruner = tp.pruner.GroupNormPruner(
+        # pruner = tp.pruner.GroupNormPruner(
+        pruner = pruner(
             model.model,
             example_inputs,
-            importance=tp.importance.GroupNormImportance(),  # L2 norm pruning,
-            iterative_steps=1,
-            pruning_ratio=pruning_ratio,
+            #importance=tp.importance.GroupNormImportance(),  # L2 norm pruning,
+            #global_pruning
+            # pruning_ratio=pruning_ratio,
+            pruning_ratio=args.target_prune_rate,
+            pruning_ratio_dict=pruning_ratio_dict,
+            #max_pruning_ratio=args.max_pruning_ratio,
+            iterative_steps=args.iterative_steps,
+            iterative_pruning_ratio_scheduler=fixed_step_scheduler,
             ignored_layers=ignored_layers,
-            unwrapped_parameters=unwrapped_parameters
+            unwrapped_parameters=unwrapped_parameters,
         )
 
         # TODO Regularization
@@ -559,7 +640,11 @@ def prune(args):
         )
 
         if init_map - current_map > args.max_map_drop:
-            LOGGER.info("Pruning early stop")
+            LOGGER.info("Pruning early stop: Reached max mAP drop")
+            break
+
+        if ( 1.0 / current_speed_up ) < ( 1 - args.target_prune_rate ):
+            LOGGER.info("Pruning early stop: Reached target speedup")
             break
 
     exported_path = model.export(format='onnx')
@@ -571,6 +656,9 @@ def parse_args():
     parser.add_argument('--cfg', default='my_test_cfg.yaml',
                         help='Pruning config file.'
                              ' This file should have same format with ultralytics/yolo/cfg/default.yaml')
+    parser.add_argument("--prune-method", type=str, default='group_norm')
+    parser.add_argument("--reg", type=float, default=5e-4) # Regularization coefficient
+    parser.add_argument("--global-pruning", action="store_true", default=False)
     parser.add_argument('--iterative-steps', default=16, type=int, help='Total pruning iteration step')
     parser.add_argument('--target-prune-rate', default=0.5, type=float, help='Target pruning rate')
     parser.add_argument('--max-map-drop', default=0.2, type=float, help='Allowed maximum map drop after fine-tuning')
