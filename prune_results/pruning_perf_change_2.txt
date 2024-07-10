@@ -1,0 +1,1 @@
+{"model": "yolov8n.pt", "cfg": "my_test_cfg.yaml", "iterative_steps": 16, "target_prune_rate": 0.5, "max_map_drop": 0.5, "epochs": 30, "log_level": "INFO"}
