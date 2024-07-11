@@ -516,11 +516,13 @@ def prune(args):
 
     # Load Config
     pruning_cfg = yaml_load(check_yaml(args.cfg))
+    pruning_cfg['project'] = "runs/" + pruning_cfg["task"] + "/" + time.strftime("%Y-%m-%d-%H:%M") # Save each run in sepparate folder
     batch_size = pruning_cfg['batch']
 
     # use coco128 dataset for 10 epochs fine-tuning each pruning iteration step
     # this part is only for sample code, number of epochs should be included in config file
-    pruning_cfg['data'] = "coco128.yaml"
+    if args.dataset is not None:
+        pruning_cfg['data'] = args.dataset # "coco128.yaml"
     pruning_cfg['epochs'] = args.epochs
     # TODO LR?
 
@@ -539,7 +541,11 @@ def prune(args):
     pruning_cfg['name'] = f"baseline_val"
     pruning_cfg['batch'] = 1
     validation_model = deepcopy(model)
+
+    #pruning_cfg['data'] = "coco.yaml" # TODO temporal, remove this
     metric = validation_model.val(**pruning_cfg)
+    #pruning_cfg['data'] = "coco128.yaml"
+
     init_map = metric.box.map
     macs_list.append(base_macs)
     nparams_list.append(100) # save as % of baseline
@@ -577,7 +583,7 @@ def prune(args):
             pruning_ratio_dict=pruning_ratio_dict,
             #max_pruning_ratio=args.max_pruning_ratio,
             iterative_steps=args.iterative_steps,
-            iterative_pruning_ratio_scheduler=fixed_step_scheduler,
+            #iterative_pruning_ratio_scheduler=fixed_step_scheduler, # linear is default
             ignored_layers=ignored_layers,
             unwrapped_parameters=unwrapped_parameters,
         )
@@ -608,7 +614,10 @@ def prune(args):
             param.requires_grad = True
         pruning_cfg['name'] = f"step_{i}_finetune"
         pruning_cfg['batch'] = batch_size  # restore batch size
+
+        pruning_cfg['data'] = "coco128.yaml" # TODO Reduced dataset just for training (Temporal)
         model.train_v2(pruning=True, **pruning_cfg)
+        pruning_cfg['data'] = "coco.yaml"
 
         #print(model.model.criterion)
         #LOGGER.error("ERROR: ", str(model.model.criterion))
@@ -636,7 +645,7 @@ def prune(args):
             map_list, macs_list, 
             pruned_map_list,
             console_args = vars(args), # Convert to dict
-            subTitleStr=f"{args.model} - steps: {args.iterative_steps} - target: {args.target_prune_rate}"
+            subTitleStr=f"{pruning_cfg['project']} : {args.model} - steps: {args.iterative_steps} - target: {args.target_prune_rate}"
         )
 
         if init_map - current_map > args.max_map_drop:
@@ -666,6 +675,9 @@ def parse_args():
     parser.add_argument('--log-level', type=str, default='INFO',
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'INFO'],
                         help='Set the logging level')
+    parser.add_argument('--dataset', type=str, default=None,
+                        choices=['coco128.yaml', 'coco8.yaml', 'coco.yaml'],
+                        help='Set the desired dataset')
     return parser.parse_args()
 
 def set_logger_level(log_level):
