@@ -1,11 +1,13 @@
 # This code is adapted from Issue [#147](https://github.com/VainF/Torch-Pruning/issues/147), implemented by @Hyunseok-Kim0.
 import argparse
 from functools import partial
+import glob
 import math
 import os
 from copy import deepcopy
 from datetime import datetime, timedelta
 from pathlib import Path
+import pprint
 import time
 from typing import List, Union
 import json
@@ -34,16 +36,41 @@ import torch_pruning as tp
 class Plotter:
 
     def __init__(self):
-        self._currentPlot = -1 # Plot index corresponding to current run
+        self._currentPlot = 0 # Plot index corresponding to current run
+        self._out_dir = "prune_results"
+        if not os.path.exists(self._out_dir):
+            os.makedirs(self._out_dir)
+        self._filename = f"{self._out_dir}/pruning_perf_change"
+
+        # Find next free index to save plot
+        while glob.glob('{}_{:d}.*'.format(self._filename, self._currentPlot)):
+            self._currentPlot += 1
+        
+        # Append index to filename
+        self._filename = '{}_{:d}'.format(self._filename, self._currentPlot)
+
+        LOGGER.addHandler(logging.FileHandler(self._filename + ".log"))
+
+    def append_dict_to_log(
+        self, 
+        dict: dict = {} 
+    ):
+        # Save the console args passed to script
+        with open('{}.txt'.format(self._filename), 'a') as f:
+            #f.write(json.dumps(dict))
+            f.write("\n")
+            pprint.pprint(dict, f)
 
     def save_pruning_performance_graph(
         self,
         x, y1, y2, y3,
-        console_args: dict = {}, 
         subTitleStr: str = ""
     ) -> int: 
         """
         Draw performance change graph
+        Each call will overwrite the graph corresponding to the current run. On the next run, the graph index will be incremented.
+        Also saves plot data as json file.
+
         Parameters
         ----------
         x : List
@@ -114,28 +141,19 @@ class Plotter:
 
         plt.title('Comparison of mAP and MACs with Pruning Ratio')
         plt.suptitle(subTitleStr)
-
-        out_dir = "prune_results"
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
-
         
-        filename = f"{out_dir}/pruning_perf_change"
-        # First time, find next free index to save plot
-        if(self._currentPlot < 0):
-            i = 0
-            while os.path.exists('{}_{:d}.png'.format(filename, i)):
-                i += 1
-            self._currentPlot = i
-        
-        # Next times, just overwrite the plot corresponding to current run
-        plt.savefig('{}_{:d}.png'.format(filename, self._currentPlot))
+        # Write/overwrite the plot corresponding to current run
+        plt.savefig('{}.png'.format(self._filename))
 
-        # Save the console args passed to script
-        with open('{}_{:d}.txt'.format(filename, self._currentPlot), 'w') as f:
-            f.write(json.dumps(console_args))
-    
-
+        # Save plot data as json file too
+        dict_to_save = {
+            "x": x.tolist(),
+            "y1": y1.tolist(),
+            "y2": y2.tolist(),
+            "y3": y3.tolist()
+        }
+        with open('{}.json'.format(self._filename), "w") as fp:
+            json.dump(dict_to_save , fp) 
 
 def infer_shortcut(bottleneck):
     c1 = bottleneck.cv1.conv.in_channels
@@ -504,12 +522,12 @@ def fixed_step_scheduler(pruning_ratio_dict, steps):
     pruning_ratio = 1 - math.pow((1 - args.target_prune_rate), 1 / args.iterative_steps)
     return [pruning_ratio * pruning_ratio_dict for i in range(steps)]
 
-def prune(args):
+def prune(args, plotter: Plotter):
     # load trained yolov8 model
     model = YOLO(args.model)
 
-    # Instantiate plotter for pruning results
-    plotter = Plotter()
+    # Save script arguments to log
+    plotter.append_dict_to_log(dict = vars(args)) # Convert to dict with "vars"
 
     # Append tweaked training function to model
     model.__setattr__("train_v2", train_v2.__get__(model))
@@ -521,10 +539,13 @@ def prune(args):
 
     # use coco128 dataset for 10 epochs fine-tuning each pruning iteration step
     # this part is only for sample code, number of epochs should be included in config file
-    if args.dataset is not None:
+    if args.dataset is not None: # Overwrite choice from config file, if script argument is provided
         pruning_cfg['data'] = args.dataset # "coco128.yaml"
     pruning_cfg['epochs'] = args.epochs
     # TODO LR?
+
+    # Save configuration to log
+    plotter.append_dict_to_log(pruning_cfg)
 
     model.model.train()
     replace_c2f_with_c2f_v2(model.model) # Prevents depGraph error (caused by layer split and concatenation)
@@ -615,9 +636,9 @@ def prune(args):
         pruning_cfg['name'] = f"step_{i}_finetune"
         pruning_cfg['batch'] = batch_size  # restore batch size
 
-        pruning_cfg['data'] = "coco128.yaml" # TODO Reduced dataset just for training (Temporal)
+        #pruning_cfg['data'] = "coco128.yaml" # TODO Reduced dataset just for training (Temporal)
         model.train_v2(pruning=True, **pruning_cfg)
-        pruning_cfg['data'] = "coco.yaml"
+        #pruning_cfg['data'] = "coco.yaml"
 
         #print(model.model.criterion)
         #LOGGER.error("ERROR: ", str(model.model.criterion))
@@ -644,7 +665,6 @@ def prune(args):
             nparams_list, 
             map_list, macs_list, 
             pruned_map_list,
-            console_args = vars(args), # Convert to dict
             subTitleStr=f"{pruning_cfg['project']} : {args.model} - steps: {args.iterative_steps} - target: {args.target_prune_rate}"
         )
 
@@ -662,7 +682,7 @@ def prune(args):
 def parse_args():
     parser = argparse.ArgumentParser(description="YOLOv8 Pruning")
     parser.add_argument('--model', default='yolov8m.pt', help='Pretrained pruning target model file')
-    parser.add_argument('--cfg', default='my_test_cfg.yaml',
+    parser.add_argument('--cfg', default='my_cfg.yaml',
                         help='Pruning config file.'
                              ' This file should have same format with ultralytics/yolo/cfg/default.yaml')
     parser.add_argument("--prune-method", type=str, default='group_norm')
@@ -694,13 +714,17 @@ if __name__ == "__main__":
     
     args = parse_args()
     set_logger_level(args.log_level)
+
+    # Instantiate plotter for pruning results
+    plotter = Plotter()
     
     # Save start time
     start_time = time.time()
     
     # Run pruning algorithm
-    prune(args)
+    prune(args, plotter)
 
     # Print runtime
     runtime = str(timedelta( seconds=(time.time() - start_time) ))
     LOGGER.info(f"--- Total runtime: {runtime} (hours:min:sec) ---")
+    plotter.append_dict_to_log({"runtime": runtime})

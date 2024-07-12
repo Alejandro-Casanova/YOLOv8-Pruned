@@ -168,4 +168,6 @@ pnnx*
 # calibration image
 calibration_*.npy
 
+# My stuff
 **/nohup.out
+prune_results/*
