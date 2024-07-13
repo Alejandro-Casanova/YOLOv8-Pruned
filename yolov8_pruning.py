@@ -522,6 +522,88 @@ def fixed_step_scheduler(pruning_ratio_dict, steps):
     pruning_ratio = 1 - math.pow((1 - args.target_prune_rate), 1 / args.iterative_steps)
     return [pruning_ratio * pruning_ratio_dict for i in range(steps)]
 
+def train(args, plotter: Plotter):
+    # load trained yolov8 model
+    model = YOLO(args.model)
+
+    # Append tweaked training function to model
+    model.__setattr__("train_v2", train_v2.__get__(model))
+
+    # Load Config
+    pruning_cfg = yaml_load(check_yaml(args.cfg))
+    pruning_cfg['project'] = "runs/" + pruning_cfg["task"] + "/" + time.strftime("%Y-%m-%d-%H:%M") # Save each run in sepparate folder
+    batch_size = pruning_cfg['batch']
+
+    if args.data is not None: # Overwrite choice from config file, if script argument is provided
+        pruning_cfg['data'] = args.data # "coco128.yaml"
+    pruning_cfg['epochs'] = args.epochs
+
+    # Save configuration to log
+    plotter.append_dict_to_log(pruning_cfg)
+
+    model.model.train()
+    for name, param in model.model.named_parameters():
+        param.requires_grad = True
+
+    example_inputs = torch.randn(1, 3, pruning_cfg["imgsz"], pruning_cfg["imgsz"]).to(model.device)
+    macs_list, nparams_list, map_list, pruned_map_list = [], [], [], [] # Will store metrics during iterative pruning process
+    base_macs, base_nparams = tp.utils.count_ops_and_params(model.model, example_inputs) # Baseline metrics
+
+    # do validation before pruning model
+    pruning_cfg['name'] = f"baseline_val"
+    pruning_cfg['batch'] = 1
+    validation_model = deepcopy(model)
+
+    #pruning_cfg['data'] = "coco.yaml" # TODO temporal, remove this
+    metric = validation_model.val(**pruning_cfg)
+    #pruning_cfg['data'] = "coco128.yaml"
+
+    init_map = metric.box.map
+    macs_list.append(base_macs)
+    nparams_list.append(100) # save as % of baseline
+    map_list.append(init_map)
+    pruned_map_list.append(init_map)
+    LOGGER.info(f"Before Train: mAP={init_map: .5f}")
+
+    model.model.train()
+    for name, param in model.model.named_parameters():
+        param.requires_grad = True
+
+    # fine-tuning
+    for _, param in model.model.named_parameters():
+        param.requires_grad = True
+    pruning_cfg['name'] = f"train"
+    pruning_cfg['batch'] = batch_size  # restore batch size
+
+    #pruning_cfg['data'] = "coco128.yaml" # TODO Reduced dataset just for training (Temporal)
+    model.train_v2(pruning=True, **pruning_cfg)
+
+    # post fine-tuning validation
+    pruning_cfg['name'] = f"train_post_val"
+    pruning_cfg['batch'] = 1
+    validation_model = YOLO(model.trainer.best)
+    metric = validation_model.val(**pruning_cfg)
+    current_map = metric.box.map
+    LOGGER.info(f"After fine tuning mAP={current_map}")
+
+    # Save post fine-tuning validation metrics
+    macs_list.append(base_macs)
+    nparams_list.append(100) # save as % of baseline
+    map_list.append(init_map)
+    map_list.append(current_map)
+
+    # Plot results for each iteration
+    plotter.save_pruning_performance_graph(
+        nparams_list, 
+        map_list, macs_list, 
+        pruned_map_list,
+        subTitleStr=f"{pruning_cfg['project']} : {args.model} - steps: {args.iterative_steps} - target: {args.target_prune_rate}"
+    )
+
+    exported_path = model.export(format='onnx')
+    LOGGER.info(f"Final model saved at: {exported_path}")
+
+
 def prune(args, plotter: Plotter):
     # load trained yolov8 model
     model = YOLO(args.model)
@@ -539,8 +621,8 @@ def prune(args, plotter: Plotter):
 
     # use coco128 dataset for 10 epochs fine-tuning each pruning iteration step
     # this part is only for sample code, number of epochs should be included in config file
-    if args.dataset is not None: # Overwrite choice from config file, if script argument is provided
-        pruning_cfg['data'] = args.dataset # "coco128.yaml"
+    if args.data is not None: # Overwrite choice from config file, if script argument is provided
+        pruning_cfg['data'] = args.data # "coco128.yaml"
     pruning_cfg['epochs'] = args.epochs
     # TODO LR?
 
@@ -682,6 +764,9 @@ def prune(args, plotter: Plotter):
 def parse_args():
     parser = argparse.ArgumentParser(description="YOLOv8 Pruning")
     parser.add_argument('--model', default='yolov8m.pt', help='Pretrained pruning target model file')
+    parser.add_argument('--mode', type=str, default='prune',
+                        choices=['prune', 'train'],
+                        help='Set the script mode')
     parser.add_argument('--cfg', default='my_cfg.yaml',
                         help='Pruning config file.'
                              ' This file should have same format with ultralytics/yolo/cfg/default.yaml')
@@ -695,7 +780,7 @@ def parse_args():
     parser.add_argument('--log-level', type=str, default='INFO',
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'INFO'],
                         help='Set the logging level')
-    parser.add_argument('--dataset', type=str, default=None,
+    parser.add_argument('--data', type=str, default=None,
                         choices=['coco128.yaml', 'coco8.yaml', 'coco.yaml'],
                         help='Set the desired dataset')
     return parser.parse_args()
@@ -721,8 +806,12 @@ if __name__ == "__main__":
     # Save start time
     start_time = time.time()
     
-    # Run pruning algorithm
-    prune(args, plotter)
+    if args.mode == "prune":
+        # Run pruning algorithm
+        prune(args, plotter)
+    elif args.mode == "train":
+        # Just run training
+        train(args, plotter)
 
     # Print runtime
     runtime = str(timedelta( seconds=(time.time() - start_time) ))
