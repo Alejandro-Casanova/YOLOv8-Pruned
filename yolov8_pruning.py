@@ -589,7 +589,7 @@ def train(args, plotter: Plotter):
     # Save post fine-tuning validation metrics
     macs_list.append(base_macs)
     nparams_list.append(100) # save as % of baseline
-    map_list.append(init_map)
+    pruned_map_list.append(init_map)
     map_list.append(current_map)
 
     # Plot results for each iteration
