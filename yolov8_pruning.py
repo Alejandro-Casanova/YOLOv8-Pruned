@@ -2,6 +2,7 @@
 import argparse
 from functools import partial
 import glob
+import inspect
 import math
 import os
 from copy import deepcopy
@@ -98,7 +99,7 @@ class Plotter:
         fig, ax = plt.subplots(figsize=(8, 6))
 
         # plot the pruned mAP and recovered mAP
-        ax.set_xlabel('Pruning Ratio')
+        ax.set_xlabel('Model size (1 - pruning ratio) %')
         ax.set_ylabel('mAP')
         ax.plot(x, y1, label='recovered mAP')
         ax.scatter(x, y1)
@@ -517,10 +518,11 @@ def setup_pruner(args):
     # )
     return pruner_entry
 
-def fixed_step_scheduler(pruning_ratio_dict, steps):
-    # prune same ratio of filter based on initial size
-    pruning_ratio = 1 - math.pow((1 - args.target_prune_rate), 1 / args.iterative_steps)
-    return [pruning_ratio * pruning_ratio_dict for i in range(steps)]
+## Does not work
+# def fixed_step_scheduler(pruning_ratio_dict, steps):
+#     # prune same ratio of filter based on initial size
+#     pruning_ratio = 1 - math.pow((1 - args.target_prune_rate), 1 / args.iterative_steps)
+#     return [pruning_ratio * pruning_ratio_dict for i in range(steps)]
 
 def train(args, plotter: Plotter):
     # load trained yolov8 model
@@ -603,10 +605,47 @@ def train(args, plotter: Plotter):
     exported_path = model.export(format='onnx')
     LOGGER.info(f"Final model saved at: {exported_path}")
 
+def inspect_attributes_and_methods(obj: object):
+    # Get all attributes and methods
+    all_attributes_and_methods = dir(obj)
+
+    # Filter out built-in attributes and methods
+    user_defined_attributes_and_methods = [attr for attr in all_attributes_and_methods if not attr.startswith('__')]
+
+    # Print user-defined attributes and methods
+    print(user_defined_attributes_and_methods)
+
+def overwrite_dict(target_dict, source_dict):
+    for key, value in vars(source_dict).items():
+        if key in target_dict and value is not None:
+            target_dict[key] = value
+
+def progressive_pruning(
+        pruner, 
+        model, 
+        target_prune_rate, 
+        example_inputs):
+    
+    model.eval()
+    base_flops, base_params = tp.utils.count_ops_and_params(model, example_inputs=example_inputs)
+    current_prune_rate = 0.0
+    current_compression_rate = 1.0
+    while current_prune_rate < target_prune_rate:
+        pruner.step()
+        pruned_flops, pruned_params = tp.utils.count_ops_and_params(model, example_inputs=example_inputs)
+        current_compression_rate = float(base_params) / pruned_params
+        current_prune_rate = ( float(base_params) - pruned_params ) / float(base_params)
+        LOGGER.info(f"Progressive Prunning. Current prune rate: {current_prune_rate} \t - current compression: {current_compression_rate}")
+        
+        if pruner.current_step == pruner.iterative_steps:
+            LOGGER.warning("WARNING⚠️: Reached max iterative step before desired compression was achieved.")
+            break
+    return current_compression_rate
 
 def prune(args, plotter: Plotter):
     # load trained yolov8 model
     model = YOLO(args.model)
+    # inspect_attributes_and_methods(model)
 
     # Save script arguments to log
     plotter.append_dict_to_log(dict = vars(args)) # Convert to dict with "vars"
@@ -616,14 +655,19 @@ def prune(args, plotter: Plotter):
 
     # Load Config
     pruning_cfg = yaml_load(check_yaml(args.cfg))
+
+    # Overwrite config file arguments with those parsed from command line
+    overwrite_dict(pruning_cfg, args)
+
+    # Save path for results
     pruning_cfg['project'] = "runs/" + pruning_cfg["task"] + "/" + time.strftime("%Y-%m-%d-%H:%M") # Save each run in sepparate folder
-    batch_size = pruning_cfg['batch']
+    batch_size = pruning_cfg['batch'] # Save original batch size
 
     # use coco128 dataset for 10 epochs fine-tuning each pruning iteration step
     # this part is only for sample code, number of epochs should be included in config file
-    if args.data is not None: # Overwrite choice from config file, if script argument is provided
-        pruning_cfg['data'] = args.data # "coco128.yaml"
-    pruning_cfg['epochs'] = args.epochs
+    # if args.data is not None: # Overwrite choice from config file, if script argument is provided
+    #     pruning_cfg['data'] = args.data # "coco128.yaml"
+    # pruning_cfg['epochs'] = args.epochs
     # TODO LR?
 
     # Save configuration to log
@@ -682,10 +726,10 @@ def prune(args, plotter: Plotter):
             #importance=tp.importance.GroupNormImportance(),  # L2 norm pruning,
             #global_pruning
             # pruning_ratio=pruning_ratio,
-            pruning_ratio=args.target_prune_rate,
-            pruning_ratio_dict=pruning_ratio_dict,
+            pruning_ratio=1.0,
+            #pruning_ratio_dict=pruning_ratio_dict,
             #max_pruning_ratio=args.max_pruning_ratio,
-            iterative_steps=args.iterative_steps,
+            iterative_steps=400,
             #iterative_pruning_ratio_scheduler=fixed_step_scheduler, # linear is default
             ignored_layers=ignored_layers,
             unwrapped_parameters=unwrapped_parameters,
@@ -699,7 +743,8 @@ def prune(args, plotter: Plotter):
         
         # Prune
         LOGGER.info(f"Started pruning for iter {i + 1}")
-        pruner.step()
+        #pruner.step()
+        progressive_pruning(pruner=pruner, model=model.model, target_prune_rate=args.target_prune_rate, example_inputs=example_inputs)
 
         # pre fine-tuning validation
         pruning_cfg['name'] = f"step_{i}_pre_val"
@@ -761,28 +806,55 @@ def prune(args, plotter: Plotter):
     exported_path = model.export(format='onnx')
     LOGGER.info(f"Final model saved at: {exported_path}")
 
+def float_range(mini,maxi):
+    """Return function handle of an argument type function for 
+       ArgumentParser checking a float range: mini <= arg <= maxi
+         mini - minimum acceptable argument
+         maxi - maximum acceptable argument"""
+
+    # Define the function with default arguments
+    def float_range_checker(arg):
+        """New Type function for argparse - a float within predefined range."""
+
+        try:
+            f = float(arg)
+        except ValueError:    
+            raise argparse.ArgumentTypeError("must be a floating point number")
+        if f < mini or f > maxi:
+            raise argparse.ArgumentTypeError("must be in range [" + str(mini) + " .. " + str(maxi)+"]")
+        return f
+
+    # Return function handle to checking function
+    return float_range_checker
+
 def parse_args():
     parser = argparse.ArgumentParser(description="YOLOv8 Pruning")
-    parser.add_argument('--model', default='yolov8m.pt', help='Pretrained pruning target model file')
-    parser.add_argument('--mode', type=str, default='prune',
-                        choices=['prune', 'train'],
-                        help='Set the script mode')
+
+    # Arguments for Ultralytics YOLO Library Configuration
+    parser.add_argument('--model', default='yolov8n.pt', help='Pretrained pruning target model file')
+    parser.add_argument('--data', type=str, default=None,
+                        choices=['coco128.yaml', 'coco8.yaml', 'coco.yaml'],
+                        help='Set the desired dataset')
     parser.add_argument('--cfg', default='my_cfg.yaml',
                         help='Pruning config file.'
                              ' This file should have same format with ultralytics/yolo/cfg/default.yaml')
+    
+    # Arguments for Pruning Script
+    parser.add_argument('--mode', type=str, default='prune',
+                        choices=['prune', 'train'],
+                        help='Set the script mode')
     parser.add_argument("--prune-method", type=str, default='group_norm')
     parser.add_argument("--reg", type=float, default=5e-4) # Regularization coefficient
     parser.add_argument("--global-pruning", action="store_true", default=False)
     parser.add_argument('--iterative-steps', default=16, type=int, help='Total pruning iteration step')
-    parser.add_argument('--target-prune-rate', default=0.5, type=float, help='Target pruning rate')
-    parser.add_argument('--max-map-drop', default=0.2, type=float, help='Allowed maximum map drop after fine-tuning')
-    parser.add_argument('--epochs', default=10, type=int, help='Fine tuning epochs')
-    parser.add_argument('--log-level', type=str, default='INFO',
-                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'INFO'],
+    parser.add_argument('--target-prune-rate', default=0.5, type=float, help='Target pruning rate (proportion of removed parameters i.e. 1 - final_params / initial_params)')
+    parser.add_argument('--max-map-drop', default=0.2, type=float_range(0, 1), help='Allowed maximum map drop after fine-tuning (absolute percentage drop in the range [0,1])')
+    parser.add_argument('--epochs', default=10, type=int, help='Training epochs')
+
+    parser.add_argument('--log-level', type=str, default='DEBUG',
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level')
-    parser.add_argument('--data', type=str, default=None,
-                        choices=['coco128.yaml', 'coco8.yaml', 'coco.yaml'],
-                        help='Set the desired dataset')
+    
     return parser.parse_args()
 
 def set_logger_level(log_level):
