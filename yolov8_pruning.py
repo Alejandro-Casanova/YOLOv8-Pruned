@@ -532,7 +532,7 @@ def train(args, plotter: Plotter):
     model.__setattr__("train_v2", train_v2.__get__(model))
 
     # Load Config
-    pruning_cfg = yaml_load(check_yaml(args.cfg))
+    pruning_cfg = yaml_load(check_yaml(args.cfg_file))
     pruning_cfg['project'] = "runs/" + pruning_cfg["task"] + "/" + time.strftime("%Y-%m-%d-%H:%M") # Save each run in sepparate folder
     batch_size = pruning_cfg['batch']
 
@@ -615,9 +615,13 @@ def inspect_attributes_and_methods(obj: object):
     # Print user-defined attributes and methods
     print(user_defined_attributes_and_methods)
 
-def overwrite_dict(target_dict, source_dict):
-    for key, value in vars(source_dict).items():
+def overwrite_dict(target_dict: dict, source_dict: dict):
+    LOGGER.info("Over-writing config file parameters with provided cli arguments...")
+    # print(f"SRC BEFORE: {source_dict}")
+    # print(f"DST BEFORE: {target_dict}")
+    for key, value in source_dict.items():
         if key in target_dict and value is not None:
+            print(f"Overwrote: ({key}: {value})")
             target_dict[key] = value
 
 def progressive_pruning(
@@ -642,26 +646,36 @@ def progressive_pruning(
             break
     return current_compression_rate
 
+# def my_linear_scheduler(pruning_ratio_dict, steps):
+#     print(f"Dict: {pruning_ratio_dict} - Steps: {steps}")
+#     schedule_list = [((1) / float(steps)) * pruning_ratio_dict for i in range(steps+1)]
+#     #schedule_list[0] = pruning_ratio_dict * 0.3
+#     schedule_list[1] = pruning_ratio_dict * 0.3
+#     schedule_list[2] = pruning_ratio_dict * 0.1
+#     print(f"Schedule Steps List: {schedule_list}")
+#     return schedule_list
+
 def prune(args, plotter: Plotter):
-    # load trained yolov8 model
-    model = YOLO(args.model)
-    # inspect_attributes_and_methods(model)
 
     # Save script arguments to log
     plotter.append_dict_to_log(dict = vars(args)) # Convert to dict with "vars"
 
-    # Append tweaked training function to model
-    model.__setattr__("train_v2", train_v2.__get__(model))
-
     # Load Config
-    pruning_cfg = yaml_load(check_yaml(args.cfg))
+    pruning_cfg = yaml_load(check_yaml(args.cfg_file))
 
     # Overwrite config file arguments with those parsed from command line
-    overwrite_dict(pruning_cfg, args)
+    overwrite_dict(pruning_cfg, vars(args))
 
     # Save path for results
     pruning_cfg['project'] = "runs/" + pruning_cfg["task"] + "/" + time.strftime("%Y-%m-%d-%H:%M") # Save each run in sepparate folder
     batch_size = pruning_cfg['batch'] # Save original batch size
+
+    # load trained yolov8 model
+    model = YOLO(pruning_cfg["model"])
+    # inspect_attributes_and_methods(model)
+
+    # Append tweaked training function to model
+    model.__setattr__("train_v2", train_v2.__get__(model))
 
     # use coco128 dataset for 10 epochs fine-tuning each pruning iteration step
     # this part is only for sample code, number of epochs should be included in config file
@@ -703,7 +717,7 @@ def prune(args, plotter: Plotter):
     # prune same ratio of filter based on initial size
     pruning_ratio = 1 - math.pow((1 - args.target_prune_rate), 1 / args.iterative_steps)
     LOGGER.debug(f"PRUNE RATIO: {pruning_ratio}")
-    
+    pruning_ratio = args.target_prune_rate # FOR TESTING: should cut model by half twice if iterative_steps is 2
     for i in range(args.iterative_steps):
 
         model.model.train()
@@ -730,7 +744,7 @@ def prune(args, plotter: Plotter):
             #pruning_ratio_dict=pruning_ratio_dict,
             #max_pruning_ratio=args.max_pruning_ratio,
             iterative_steps=400,
-            #iterative_pruning_ratio_scheduler=fixed_step_scheduler, # linear is default
+            #iterative_pruning_ratio_scheduler=my_linear_scheduler, # linear is default
             ignored_layers=ignored_layers,
             unwrapped_parameters=unwrapped_parameters,
         )
@@ -744,7 +758,10 @@ def prune(args, plotter: Plotter):
         # Prune
         LOGGER.info(f"Started pruning for iter {i + 1}")
         #pruner.step()
-        progressive_pruning(pruner=pruner, model=model.model, target_prune_rate=args.target_prune_rate, example_inputs=example_inputs)
+        progressive_pruning(pruner=pruner, 
+                            model=model.model, 
+                            target_prune_rate=pruning_ratio, #args.target_prune_rate, 
+                            example_inputs=example_inputs)
 
         # pre fine-tuning validation
         pruning_cfg['name'] = f"step_{i}_pre_val"
@@ -830,28 +847,38 @@ def float_range(mini,maxi):
 def parse_args():
     parser = argparse.ArgumentParser(description="YOLOv8 Pruning")
 
-    # Arguments for Ultralytics YOLO Library Configuration
-    parser.add_argument('--model', default='yolov8n.pt', help='Pretrained pruning target model file')
-    parser.add_argument('--data', type=str, default=None,
-                        choices=['coco128.yaml', 'coco8.yaml', 'coco.yaml'],
-                        help='Set the desired dataset')
-    parser.add_argument('--cfg', default='my_cfg.yaml',
+    # Default parameters from Ultralytics Yolo config file
+    parser.add_argument('--cfg-file', default='my_config_files/base_cfg.yaml',
                         help='Pruning config file.'
                              ' This file should have same format with ultralytics/yolo/cfg/default.yaml')
     
+    # Arguments for Ultralytics YOLO Library Configuration
+    # Will overwrite config file parameters if not None
+    parser.add_argument('--model', type=str, default=None, 
+                        help='Pretrained pruning target model file')
+    parser.add_argument('--data', type=str, default=None,
+                        #choices=['coco128.yaml', 'coco8.yaml', 'coco.yaml'],
+                        help='Set the desired dataset')
+    parser.add_argument('--epochs', default=None, type=int, help='Training epochs')
+    parser.add_argument("--lrf", type=float, default=None, # Final Learning Rate Multiplier
+                        help="Final Learning Rate MULTIPLIER"
+                        "Final learning rate = lr0 * lrf"
+                        "For constant learning rate: lrf = 1"
+                        "lr0 is initial learning rate (default is 0.01 for SGD)") 
+    
     # Arguments for Pruning Script
-    parser.add_argument('--mode', type=str, default='prune',
+    parser.add_argument('--script-mode', type=str, default='prune',
                         choices=['prune', 'train'],
                         help='Set the script mode')
     parser.add_argument("--prune-method", type=str, default='group_norm')
     parser.add_argument("--reg", type=float, default=5e-4) # Regularization coefficient
     parser.add_argument("--global-pruning", action="store_true", default=False)
-    parser.add_argument('--iterative-steps', default=16, type=int, help='Total pruning iteration step')
+    parser.add_argument('--iterative-steps', default=1, type=int, help='Total pruning iteration step')
     parser.add_argument('--target-prune-rate', default=0.5, type=float, help='Target pruning rate (proportion of removed parameters i.e. 1 - final_params / initial_params)')
-    parser.add_argument('--max-map-drop', default=0.2, type=float_range(0, 1), help='Allowed maximum map drop after fine-tuning (absolute percentage drop in the range [0,1])')
-    parser.add_argument('--epochs', default=10, type=int, help='Training epochs')
+    parser.add_argument('--max-map-drop', default=1.0, type=float_range(0, 1), help='Allowed maximum map drop after fine-tuning (absolute percentage drop in the range [0,1])')
 
-    parser.add_argument('--log-level', type=str, default='DEBUG',
+
+    parser.add_argument('--log-level', type=str, default='INFO', # DEBUG LEVEL DOESN'T WORK
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level')
     
@@ -864,13 +891,20 @@ def set_logger_level(log_level):
         LOGGER.setLevel(logging.INFO)
         LOGGER.info(f'Logger level set to {log_level}')
     else:
-        LOGGER.info(f'Logger level set to {log_level}')
+        LOGGER.info(f'Logger level set to {log_level} {(numeric_level)}')
         LOGGER.setLevel(numeric_level)
+
+    # Test each level
+    # LOGGER.debug("Logger Debug Message Test")
+    # LOGGER.info("Logger Info Message Test")
+    # LOGGER.warning("Logger Warning Message Test")
+    # LOGGER.error("Logger Error Message Test")
+    # LOGGER.critical("Logger Critical Message Test")
 
 if __name__ == "__main__":
     
     args = parse_args()
-    set_logger_level(args.log_level)
+    set_logger_level(args.log_level) # Debug level doesn't work
 
     # Instantiate plotter for pruning results
     plotter = Plotter()
@@ -878,10 +912,10 @@ if __name__ == "__main__":
     # Save start time
     start_time = time.time()
     
-    if args.mode == "prune":
+    if args.script_mode == "prune":
         # Run pruning algorithm
         prune(args, plotter)
-    elif args.mode == "train":
+    elif args.script_mode == "train":
         # Just run training
         train(args, plotter)
 
