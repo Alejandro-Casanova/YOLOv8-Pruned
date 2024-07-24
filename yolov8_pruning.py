@@ -17,7 +17,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 from matplotlib import pyplot as plt
-from ultralytics import YOLO, __version__
+from ultralytics.models import YOLO
+from ultralytics import __version__
 from ultralytics.nn.modules import Detect, C2f, Conv, Bottleneck
 from ultralytics.nn.tasks import attempt_load_one_weight
 #from ultralytics.yolo.engine.model import TASK_MAP
@@ -54,12 +55,13 @@ class Plotter:
 
     def append_dict_to_log(
         self, 
-        dict: dict = {} 
+        dict: dict = {},
+        description: str = "" 
     ):
         # Save the console args passed to script
         with open('{}.txt'.format(self._filename), 'a') as f:
             #f.write(json.dumps(dict))
-            f.write("\n")
+            f.write("\n" + description)
             pprint.pprint(dict, f)
 
     def save_pruning_performance_graph(
@@ -655,10 +657,30 @@ def progressive_pruning(
 #     print(f"Schedule Steps List: {schedule_list}")
 #     return schedule_list
 
+# Handles regularization callback creation. These callbacks will then be passed to ultralytics
+# trainer, so they are called internally when required
+class RegularizationCallbacks:
+    def __init__(self, pruner_obj: tp.pruner.MetaPruner):
+        self.pruner = pruner_obj
+
+    def on_update_regularizer(self, trainer: BaseTrainer):
+        LOGGER.info("UPDATE REG")
+        self.pruner.update_regularizor() ## TODO TYPO IN FUNCTION CALL IN CURRENT VERSION OF LIBBRARY
+
+    def on_regularize(self, trainer: BaseTrainer):
+        LOGGER.info("ON REG")
+        self.pruner.regularize(trainer.model)
+
+
 def prune(args, plotter: Plotter):
 
+    # Check which arguments were passed by the user (non default), that are relevant or will overwrite config file parameters
+    keys_to_extract = ['cfg_file', 'model', 'data', 'epochs', 'lrf', 'iterative_steps', 'target_prune_rate', 'sparsity_learning']
+    filtered_dict = {k: vars(args)[k] for k in keys_to_extract if k in vars(args) and vars(args)[k] is not None}
+    plotter.append_dict_to_log(dict = filtered_dict, description="Main arguments:")
+
     # Save script arguments to log
-    plotter.append_dict_to_log(dict = vars(args)) # Convert to dict with "vars"
+    plotter.append_dict_to_log(dict = vars(args), description="All script arguments:") # Convert to dict with "vars"
 
     # Load Config
     pruning_cfg = yaml_load(check_yaml(args.cfg_file))
@@ -685,7 +707,7 @@ def prune(args, plotter: Plotter):
     # TODO LR?
 
     # Save configuration to log
-    plotter.append_dict_to_log(pruning_cfg)
+    plotter.append_dict_to_log(pruning_cfg, description="Final Configuration:")
 
     model.model.train()
     replace_c2f_with_c2f_v2(model.model) # Prevents depGraph error (caused by layer split and concatenation)
@@ -754,6 +776,9 @@ def prune(args, plotter: Plotter):
         #output = model.model(example_inputs)
         #(output[0].sum() + sum([o.sum() for o in output[1]])).backward()
         #pruner.regularize(model.model)
+        regularization_callbacks = RegularizationCallbacks(pruner)
+        model.add_callback("on_after_model_train_mode", regularization_callbacks.on_update_regularizer)
+        model.add_callback("on_before_optimizer_step", regularization_callbacks.on_regularize)
         
         # Prune
         LOGGER.info(f"Started pruning for iter {i + 1}")
@@ -871,11 +896,16 @@ def parse_args():
                         choices=['prune', 'train'],
                         help='Set the script mode')
     parser.add_argument("--prune-method", type=str, default='group_norm')
+    parser.add_argument("--sparsity_learning", action="store_true", default=False,
+                        help='Apply sparsity regularization on pre-training and post-training steps')
     parser.add_argument("--reg", type=float, default=5e-4) # Regularization coefficient
     parser.add_argument("--global-pruning", action="store_true", default=False)
-    parser.add_argument('--iterative-steps', default=1, type=int, help='Total pruning iteration step')
-    parser.add_argument('--target-prune-rate', default=0.5, type=float, help='Target pruning rate (proportion of removed parameters i.e. 1 - final_params / initial_params)')
-    parser.add_argument('--max-map-drop', default=1.0, type=float_range(0, 1), help='Allowed maximum map drop after fine-tuning (absolute percentage drop in the range [0,1])')
+    parser.add_argument('--iterative-steps', default=1, type=int, 
+                        help='Total pruning iteration step')
+    parser.add_argument('--target-prune-rate', default=0.5, type=float, 
+                        help='Target pruning rate (proportion of removed parameters i.e. 1 - final_params / initial_params)')
+    parser.add_argument('--max-map-drop', default=1.0, type=float_range(0, 1), 
+                        help='Allowed maximum map drop after fine-tuning (absolute percentage drop in the range [0,1])')
 
 
     parser.add_argument('--log-level', type=str, default='INFO', # DEBUG LEVEL DOESN'T WORK
@@ -922,4 +952,4 @@ if __name__ == "__main__":
     # Print runtime
     runtime = str(timedelta( seconds=(time.time() - start_time) ))
     LOGGER.info(f"--- Total runtime: {runtime} (hours:min:sec) ---")
-    plotter.append_dict_to_log({"runtime": runtime})
+    plotter.append_dict_to_log({"runtime": runtime}, description="Runtime:")
