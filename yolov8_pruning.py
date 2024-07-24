@@ -61,7 +61,7 @@ class Plotter:
         # Save the console args passed to script
         with open('{}.txt'.format(self._filename), 'a') as f:
             #f.write(json.dumps(dict))
-            f.write("\n" + description)
+            f.write("\n" + description + "\n")
             pprint.pprint(dict, f)
 
     def save_pruning_performance_graph(
@@ -453,7 +453,7 @@ def train_v2(self, trainer=None, pruning=False, **kwargs):
         self.metrics = getattr(self.trainer.validator, 'metrics', None)
 
 def setup_pruner(args):
-    args.sparsity_learning = False
+    #args.sparsity_learning = False
     if args.prune_method == "random":
         imp = tp.importance.RandomImportance()
         pruner_entry = partial(tp.pruner.MagnitudePruner, global_pruning=args.global_pruning)
@@ -675,7 +675,7 @@ class RegularizationCallbacks:
 def prune(args, plotter: Plotter):
 
     # Check which arguments were passed by the user (non default), that are relevant or will overwrite config file parameters
-    keys_to_extract = ['cfg_file', 'model', 'data', 'epochs', 'lrf', 'iterative_steps', 'target_prune_rate', 'sparsity_learning']
+    keys_to_extract = ['cfg_file', 'model', 'data', 'epochs', 'lrf', 'prune_method', 'iterative_steps', 'target_prune_rate', 'sparsity_learning']
     filtered_dict = {k: vars(args)[k] for k in keys_to_extract if k in vars(args) and vars(args)[k] is not None}
     plotter.append_dict_to_log(dict = filtered_dict, description="Main arguments:")
 
@@ -740,8 +740,11 @@ def prune(args, plotter: Plotter):
     pruning_ratio = 1 - math.pow((1 - args.target_prune_rate), 1 / args.iterative_steps)
     LOGGER.debug(f"PRUNE RATIO: {pruning_ratio}")
     pruning_ratio = args.target_prune_rate # FOR TESTING: should cut model by half twice if iterative_steps is 2
-    for i in range(args.iterative_steps):
-
+    
+    #for i in range(args.iterative_steps):
+    i = 0
+    pretraining_done_flag = False # Indicates pretraining on first iteration is done
+    while i < args.iterative_steps:
         model.model.train()
         for name, param in model.model.named_parameters():
             param.requires_grad = True
@@ -753,6 +756,7 @@ def prune(args, plotter: Plotter):
             if isinstance(m, (Detect,)):
                 ignored_layers.append(m)
 
+        # Setup pruner on each iteration 
         pruner = setup_pruner(args)
         example_inputs = example_inputs.to(model.device)
         # pruner = tp.pruner.GroupNormPruner(
@@ -776,17 +780,24 @@ def prune(args, plotter: Plotter):
         #output = model.model(example_inputs)
         #(output[0].sum() + sum([o.sum() for o in output[1]])).backward()
         #pruner.regularize(model.model)
-        regularization_callbacks = RegularizationCallbacks(pruner)
-        model.add_callback("on_after_model_train_mode", regularization_callbacks.on_update_regularizer)
-        model.add_callback("on_before_optimizer_step", regularization_callbacks.on_regularize)
-        
-        # Prune
-        LOGGER.info(f"Started pruning for iter {i + 1}")
-        #pruner.step()
-        progressive_pruning(pruner=pruner, 
-                            model=model.model, 
-                            target_prune_rate=pruning_ratio, #args.target_prune_rate, 
-                            example_inputs=example_inputs)
+
+        # Configure Sparsity Learning
+        if(args.sparsity_learning):
+            # Add regularization callbacks to model (will be automatically called when training)
+            regularization_callbacks = RegularizationCallbacks(pruner)
+            model.reset_callbacks() # Clear callbacks from previous iterations
+            model.add_callback("on_after_model_train_mode", regularization_callbacks.on_update_regularizer)
+            model.add_callback("on_before_optimizer_step", regularization_callbacks.on_regularize)
+
+        # Prune if sparsity learning is not activated, or if first iteration (just pre-train) already passed 
+        if(not args.sparsity_learning or pretraining_done_flag):
+            i += 1 # Increment Iteration
+            LOGGER.info(f"Started pruning for iter {i}")
+            #pruner.step()
+            progressive_pruning(pruner=pruner, 
+                                model=model.model, 
+                                target_prune_rate=pruning_ratio, #args.target_prune_rate, 
+                                example_inputs=example_inputs)
 
         # pre fine-tuning validation
         pruning_cfg['name'] = f"step_{i}_pre_val"
@@ -797,9 +808,9 @@ def prune(args, plotter: Plotter):
         pruned_macs, pruned_nparams = tp.utils.count_ops_and_params(pruner.model, example_inputs.to(model.device))
         current_speed_up = float(macs_list[0]) / pruned_macs
         LOGGER.info(f"After pruning iter {i + 1}: MACs={pruned_macs / 1e9} G, #Params={pruned_nparams / 1e6} M, "
-              f"mAP={pruned_map}, speed up={current_speed_up}")
+            f"mAP={pruned_map}, speed up={current_speed_up}")
 
-        # fine-tuning
+        # post-training (or pre-training if i == 0)
         for _, param in model.model.named_parameters():
             param.requires_grad = True
         pruning_cfg['name'] = f"step_{i}_finetune"
@@ -808,6 +819,10 @@ def prune(args, plotter: Plotter):
         #pruning_cfg['data'] = "coco128.yaml" # TODO Reduced dataset just for training (Temporal)
         model.train_v2(pruning=True, **pruning_cfg)
         #pruning_cfg['data'] = "coco.yaml"
+
+        # Signal pre-training on first iteration (for sparsity learning) is done
+        if(args.sparsity_learning and i == 0):
+            pretraining_done_flag = True
 
         #print(model.model.criterion)
         #LOGGER.error("ERROR: ", str(model.model.criterion))
@@ -830,12 +845,13 @@ def prune(args, plotter: Plotter):
         del pruner
 
         # Plot results for each iteration
-        plotter.save_pruning_performance_graph(
-            nparams_list, 
-            map_list, macs_list, 
-            pruned_map_list,
-            subTitleStr=f"{pruning_cfg['project']} : {args.model} - steps: {args.iterative_steps} - target: {args.target_prune_rate}"
-        )
+        if not args.test_run:
+            plotter.save_pruning_performance_graph(
+                nparams_list, 
+                map_list, macs_list, 
+                pruned_map_list,
+                subTitleStr=f"{pruning_cfg['project']} : {pruning_cfg['model']} - steps: {args.iterative_steps} - target: {args.target_prune_rate} - epochs: {pruning_cfg['epochs']}"
+            )
 
         if init_map - current_map > args.max_map_drop:
             LOGGER.info("Pruning early stop: Reached max mAP drop")
@@ -895,9 +911,12 @@ def parse_args():
     parser.add_argument('--script-mode', type=str, default='prune',
                         choices=['prune', 'train'],
                         help='Set the script mode')
-    parser.add_argument("--prune-method", type=str, default='group_norm')
-    parser.add_argument("--sparsity_learning", action="store_true", default=False,
-                        help='Apply sparsity regularization on pre-training and post-training steps')
+    parser.add_argument("--prune-method", type=str, default='group_sl',
+                        choices=['group_norm', 'group_sl'],
+                        help="Pruning method")
+    parser.add_argument("--sparsity-learning", action="store_true", default=False,
+                        help='Apply sparsity regularization on pre-training and post-training steps'
+                        'Will be set to true automatically if group_sl method is selected.')
     parser.add_argument("--reg", type=float, default=5e-4) # Regularization coefficient
     parser.add_argument("--global-pruning", action="store_true", default=False)
     parser.add_argument('--iterative-steps', default=1, type=int, 
@@ -911,6 +930,8 @@ def parse_args():
     parser.add_argument('--log-level', type=str, default='INFO', # DEBUG LEVEL DOESN'T WORK
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level')
+    parser.add_argument("--test-run", action="store_true", default=False,
+                        help="Indicates this is a test run, so there's no need to save pruning results")
     
     return parser.parse_args()
 
