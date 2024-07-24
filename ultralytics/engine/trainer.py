@@ -354,6 +354,7 @@ class BaseTrainer:
                 self.scheduler.step()
 
             self.model.train()
+            self.run_callbacks("on_after_model_train_mode")
             if RANK != -1:
                 self.train_loader.sampler.set_epoch(epoch)
             pbar = enumerate(self.train_loader)
@@ -396,6 +397,7 @@ class BaseTrainer:
 
                 # Optimize - https://pytorch.org/docs/master/notes/amp_examples.html
                 if ni - last_opt_step >= self.accumulate:
+                    self.run_callbacks("on_before_optimizer_step")
                     self.optimizer_step()
                     last_opt_step = ni
 
