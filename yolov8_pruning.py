@@ -738,8 +738,10 @@ def prune(args, plotter: Plotter):
 
     # prune same ratio of filter based on initial size
     pruning_ratio = 1 - math.pow((1 - args.target_prune_rate), 1 / args.iterative_steps)
-    LOGGER.debug(f"PRUNE RATIO: {pruning_ratio}")
-    pruning_ratio = args.target_prune_rate # FOR TESTING: should cut model by half twice if iterative_steps is 2
+    LOGGER.info(f"PRUNE RATIO: {pruning_ratio}")
+    fine_steps = round(100.0 / pruning_ratio) # Steps taken inside torch-pruning to aproach desired prune ratio at give global step
+    LOGGER.info(f"SMOOTH STEPS: {fine_steps}")
+    #pruning_ratio = args.target_prune_rate # FOR TESTING: should cut model by half twice if iterative_steps is 2
     
     #for i in range(args.iterative_steps):
     i = 0
@@ -769,7 +771,7 @@ def prune(args, plotter: Plotter):
             pruning_ratio=1.0,
             #pruning_ratio_dict=pruning_ratio_dict,
             #max_pruning_ratio=args.max_pruning_ratio,
-            iterative_steps=400,
+            iterative_steps=fine_steps, # was 400 beefore
             #iterative_pruning_ratio_scheduler=my_linear_scheduler, # linear is default
             ignored_layers=ignored_layers,
             unwrapped_parameters=unwrapped_parameters,
@@ -807,9 +809,13 @@ def prune(args, plotter: Plotter):
         pruned_map = metric.box.map
         pruned_macs, pruned_nparams = tp.utils.count_ops_and_params(pruner.model, example_inputs.to(model.device))
         current_speed_up = float(macs_list[0]) / pruned_macs
-        LOGGER.info(f"After pruning iter {i + 1}: MACs={pruned_macs / 1e9} G, #Params={pruned_nparams / 1e6} M, "
-            f"mAP={pruned_map}, speed up={current_speed_up}")
 
+        if(not args.sparsity_learning or pretraining_done_flag):
+            LOGGER.info(f"After pruning iter {i + 1}: MACs={pruned_macs / 1e9} G, #Params={pruned_nparams / 1e6} M, "
+                f"mAP={pruned_map}, speed up={current_speed_up}")
+        else:
+            LOGGER.info(f"After Pre-train iter {i}: mAP={pruned_map}")
+            
         # post-training (or pre-training if i == 0)
         for _, param in model.model.named_parameters():
             param.requires_grad = True
@@ -906,6 +912,12 @@ def parse_args():
                         "Final learning rate = lr0 * lrf"
                         "For constant learning rate: lrf = 1"
                         "lr0 is initial learning rate (default is 0.01 for SGD)") 
+    parser.add_argument('--weight-decay', default=None, type=float, 
+                        help='Optimizer Weight Decay for L2 regularization during training.'
+                        'Default in config_file is 1e-5')
+    parser.add_argument('--batch', default=None, type=int, 
+                        help='Training Batch Size.'
+                        'Default in config_file is 32')
     
     # Arguments for Pruning Script
     parser.add_argument('--script-mode', type=str, default='prune',
