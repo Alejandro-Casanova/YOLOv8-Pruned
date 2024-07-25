@@ -918,6 +918,9 @@ def parse_args():
     parser.add_argument('--batch', default=None, type=int, 
                         help='Training Batch Size.'
                         'Default in config_file is 32')
+    parser.add_argument('--workers', default=None, type=int, 
+                        help='Number of worker threads for data loading.'
+                        'Default in config_file is 4')
     
     # Arguments for Pruning Script
     parser.add_argument('--script-mode', type=str, default='prune',

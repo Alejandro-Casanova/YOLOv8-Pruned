@@ -81,3 +81,8 @@ python yolov8_pruning.py --data=coco.yaml --prune-method=group_norm --epochs=200
 Same as 27, constant lr
 '
 python yolov8_pruning.py --data=coco.yaml --prune-method=group_norm --lrf=1.0
+
+: ' pruning_perf_change 17 (coco-minitrain-25k) 
+Same as 17 but 8 worker threads for dataloaders
+'
+python yolov8_pruning.py --data=my_datasets/coco-minitrain-25k.yaml --prune-method=group_norm --epochs=200 --workers=8
