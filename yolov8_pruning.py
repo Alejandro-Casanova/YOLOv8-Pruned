@@ -664,11 +664,11 @@ class RegularizationCallbacks:
         self.pruner = pruner_obj
 
     def on_update_regularizer(self, trainer: BaseTrainer):
-        LOGGER.info("UPDATE REG")
+        LOGGER.debug("UPDATE REG")
         self.pruner.update_regularizor() ## TODO TYPO IN FUNCTION CALL IN CURRENT VERSION OF LIBBRARY
 
     def on_regularize(self, trainer: BaseTrainer):
-        LOGGER.info("ON REG")
+        LOGGER.debug("ON REG")
         self.pruner.regularize(trainer.model)
 
 
