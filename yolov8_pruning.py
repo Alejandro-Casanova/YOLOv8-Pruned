@@ -137,8 +137,8 @@ class Plotter:
         min_y2 = y2_ratio[min_y2_idx]
 
         # add text for the highest and lowest values near the points
-        ax.text(x[max_y1_idx], max_y1 - 0.05, f'max mAP = {max_y1:.2f}', fontsize=10)
-        ax.text(x[min_y1_idx], min_y1 + 0.02, f'min mAP = {min_y1:.2f}', fontsize=10)
+        ax.text(x[max_y1_idx], max_y1 - 0.05, f'max mAP = {100.0*max_y1:.2f}%', fontsize=10)
+        ax.text(x[min_y1_idx], min_y1 + 0.02, f'min mAP = {100.0*min_y1:.2f}%', fontsize=10)
         ax2.text(x[max_y2_idx], max_y2 - 0.05, f'max MACs = {max_y2 * y2[0] / 1e9:.2f}G', fontsize=10)
         ax2.text(x[min_y2_idx], min_y2 + 0.02, f'min MACs = {min_y2 * y2[0] / 1e9:.2f}G', fontsize=10)
 
@@ -760,6 +760,11 @@ def prune(args, plotter: Plotter):
 
         # Setup pruner on each iteration 
         pruner = setup_pruner(args)
+
+        # Disable weight decay if sparsity learning is used (sparsity learning already involves a form of weight decay regularization)
+        if args.sparsity_learning:
+            pruning_cfg['weight_decay'] = 0.0
+
         example_inputs = example_inputs.to(model.device)
         # pruner = tp.pruner.GroupNormPruner(
         pruner = pruner(
@@ -932,7 +937,8 @@ def parse_args():
     parser.add_argument("--sparsity-learning", action="store_true", default=False,
                         help='Apply sparsity regularization on pre-training and post-training steps'
                         'Will be set to true automatically if group_sl method is selected.')
-    parser.add_argument("--reg", type=float, default=5e-4) # Regularization coefficient
+    parser.add_argument("--reg", type=float, default=1e-5, # Was 5e-4 before
+                        help='Regularization Coefficient for Sparsity Learning') 
     parser.add_argument("--global-pruning", action="store_true", default=False)
     parser.add_argument('--iterative-steps', default=1, type=int, 
                         help='Total pruning iteration step')
