@@ -116,24 +116,17 @@ Same as 17 but 8 worker threads for dataloaders
 : ' pruning_perf_change 31 (coco-minitrain-25k)
 Group-sl, 50+50 epochs, baseline for batch size analysis (batch=32)
 '
-python yolov8_pruning.py --data=my_datasets/coco-minitrain-25k.yaml --epochs=50
+# python yolov8_pruning.py --data=my_datasets/coco-minitrain-25k.yaml --epochs=50
 
 : ' pruning_perf_change 32 (coco-minitrain-25k)
 Same as 31, half batch size
+# Same precision and runtime (not better or worse)
 '
-python yolov8_pruning.py --data=my_datasets/coco-minitrain-25k.yaml --epochs=50 --batch=32
+# python yolov8_pruning.py --data=my_datasets/coco-minitrain-25k.yaml --epochs=50 --batch=32
 
-: ' pruning_perf_change 33 (coco-minitrain-25k)
-Same as 31, intermediate batch size
-'
-python yolov8_pruning.py --data=my_datasets/coco-minitrain-25k.yaml --epochs=50 --batch=48
+# Following runs with bigger batch sizes crashed from CUDA out of memory
 
-: ' pruning_perf_change 34 (coco-minitrain-25k)
-Same as 31, twice batch size
-'
-python yolov8_pruning.py --data=my_datasets/coco-minitrain-25k.yaml --epochs=50 --batch=64
-
-: ' pruning_perf_change 35 (coco full dataset) 
+: ' pruning_perf_change 33 (coco full dataset) 
 Same as 28, but sparsity learning (100+100 epochs)
 # 
 '
