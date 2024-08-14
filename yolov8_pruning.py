@@ -776,7 +776,7 @@ def prune(args, plotter: Plotter):
             pruning_ratio=1.0,
             #pruning_ratio_dict=pruning_ratio_dict,
             #max_pruning_ratio=args.max_pruning_ratio,
-            iterative_steps=fine_steps, # was 400 beefore
+            iterative_steps=fine_steps, # was 400 before
             #iterative_pruning_ratio_scheduler=my_linear_scheduler, # linear is default
             ignored_layers=ignored_layers,
             unwrapped_parameters=unwrapped_parameters,
