@@ -5,11 +5,11 @@ task: detect # (str) YOLO task, i.e. detect, segment, classify, pose
 mode: train # (str) YOLO mode, i.e. train, val, predict, export, track, benchmark
 
 # Train settings -------------------------------------------------------------------------------------------------------
-model: yolov8n.pt # (str, optional) path to model file, i.e. yolov8n.pt, yolov8n.yaml
+model: my_models/trash_yolov8n_pretrained.pt # (str, optional) path to model file, i.e. yolov8n.pt, yolov8n.yaml
 data: "my_datasets/trash-detect.yaml" # (str, optional) path to data file, i.e. coco128.yaml
-epochs: 200 # (int) number of epochs to train for
+epochs: 300 # (int) number of epochs to train for
 time: # (float, optional) number of hours to train for, overrides epochs if supplied
-patience: 50 # (int) epochs to wait for no observable improvement for early stopping of training
+patience: 150 # (int) epochs to wait for no observable improvement for early stopping of training
 batch: 16 # (int) number of images per batch (-1 for AutoBatch)
 imgsz: 640 # (int | list) input images size as int for train and val modes, or list[w,h] for predict and export modes
 save: True # (bool) save train checkpoints and predict results
