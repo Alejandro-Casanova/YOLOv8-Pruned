@@ -1,0 +1,5 @@
+trash_yolov8n_pretrained_sl.pt was copied from: 
+runs/detect/2024-08-26-20:25/step_0_finetune/weights/best.pt
+
+trash_yolov8n_pretrained.pt was copied from: 
+/home/alex/Desktop/MRS-YOLO/runs/detect/testing3/weights/best.pt
