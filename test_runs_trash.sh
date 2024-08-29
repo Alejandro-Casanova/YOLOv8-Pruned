@@ -53,43 +53,43 @@ Prune 60% and retrain for 300 epochs. Pretrained model, WITH sparsity learning a
 # python yolov8_pruning.py --target-prune-rate=0.6 --model=my_models/trash_yolov8n_pretrained_sl.pt --cfg-file=my_config_files/trash_config.yaml --prune-method=group_norm --global-pruning
 
 : ' pruning_perf_change 42 (trash dataset) 
-Prune 70% and retrain for 300 epochs. Pretrained model, WITH sparsity learning and Global Pruning
-# mAP: 
+Prune 70% and retrain for 300 epochs. Pretrained model, WITHOUT sparsity learning
+# mAP: 66.13% -> 43.50%
 '
-python yolov8_pruning.py --target-prune-rate=0.7 --model=my_models/trash_yolov8n_pretrained.pt --cfg-file=my_config_files/trash_config.yaml --prune-method=group_norm
+# python yolov8_pruning.py --target-prune-rate=0.7 --model=my_models/trash_yolov8n_pretrained.pt --cfg-file=my_config_files/trash_config.yaml --prune-method=group_norm
 
 : ' pruning_perf_change 43 (trash dataset) 
-Prune 80% and retrain for 300 epochs. Pretrained model, WITH sparsity learning and Global Pruning
-# mAP: 
+Prune 80% and retrain for 300 epochs. Pretrained model, WITHOUT sparsity learning
+# mAP: 66.13% -> 30.13%
 '
-python yolov8_pruning.py --target-prune-rate=0.8 --model=my_models/trash_yolov8n_pretrained.pt --cfg-file=my_config_files/trash_config.yaml --prune-method=group_norm
+# python yolov8_pruning.py --target-prune-rate=0.8 --model=my_models/trash_yolov8n_pretrained.pt --cfg-file=my_config_files/trash_config.yaml --prune-method=group_norm
 
 : ' pruning_perf_change 44 (trash dataset) 
-Prune 90% and retrain for 300 epochs. Pretrained model, WITH sparsity learning and Global Pruning
-# mAP: 
+Prune 90% and retrain for 300 epochs. Pretrained model, WITHOUT sparsity learning
+# mAP: 66.13% -> 3.58%
 '
-python yolov8_pruning.py --target-prune-rate=0.9 --model=my_models/trash_yolov8n_pretrained.pt --cfg-file=my_config_files/trash_config.yaml --prune-method=group_norm
+# python yolov8_pruning.py --target-prune-rate=0.9 --model=my_models/trash_yolov8n_pretrained.pt --cfg-file=my_config_files/trash_config.yaml --prune-method=group_norm
 
 : ' pruning_perf_change 45 (trash dataset) 
-Prune 10% and retrain for 300 epochs. Pretrained model, WITH sparsity learning and Global Pruning
-# mAP: 
+Prune 10% and retrain for 300 epochs. Pretrained model, WITHOUT sparsity learning
+# mAP: 66.13% -> 64.98% 
 '
-python yolov8_pruning.py --target-prune-rate=0.1 --model=my_models/trash_yolov8n_pretrained.pt --cfg-file=my_config_files/trash_config.yaml --prune-method=group_norm
+# python yolov8_pruning.py --target-prune-rate=0.1 --model=my_models/trash_yolov8n_pretrained.pt --cfg-file=my_config_files/trash_config.yaml --prune-method=group_norm
 
 : ' pruning_perf_change 46 (trash dataset) 
-Prune 20% and retrain for 300 epochs. Pretrained model, WITH sparsity learning and Global Pruning
-# mAP: 
+Prune 20% and retrain for 300 epochs. Pretrained model, WITHOUT sparsity learning
+# mAP: 66.13% -> 65.00%
 '
-python yolov8_pruning.py --target-prune-rate=0.2 --model=my_models/trash_yolov8n_pretrained.pt --cfg-file=my_config_files/trash_config.yaml --prune-method=group_norm
+# python yolov8_pruning.py --target-prune-rate=0.2 --model=my_models/trash_yolov8n_pretrained.pt --cfg-file=my_config_files/trash_config.yaml --prune-method=group_norm
 
 : ' pruning_perf_change 47 (trash dataset) 
-Prune 30% and retrain for 300 epochs. Pretrained model, WITH sparsity learning and Global Pruning
-# mAP: 
+Prune 30% and retrain for 300 epochs. Pretrained model, WITHOUT sparsity learning
+# mAP: 66.13% -> 63.84%
 '
 python yolov8_pruning.py --target-prune-rate=0.3 --model=my_models/trash_yolov8n_pretrained.pt --cfg-file=my_config_files/trash_config.yaml --prune-method=group_norm
 
 : ' pruning_perf_change 48 (trash dataset) 
-Prune 60% and retrain for 300 epochs. Pretrained model, WITH sparsity learning and Global Pruning
-# mAP: 
+Prune 60% and retrain for 300 epochs. Pretrained model, WITHOUT sparsity learning
+# mAP: 66.13% -> 51.34%
 '
 python yolov8_pruning.py --target-prune-rate=0.6 --model=my_models/trash_yolov8n_pretrained.pt --cfg-file=my_config_files/trash_config.yaml --prune-method=group_norm
