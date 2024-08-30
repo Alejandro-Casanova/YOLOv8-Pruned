@@ -125,9 +125,3 @@ Same as 31, half batch size
 # python yolov8_pruning.py --data=my_datasets/coco-minitrain-25k.yaml --epochs=50 --batch=32
 
 # Following runs with bigger batch sizes crashed from CUDA out of memory
-
-: ' pruning_perf_change 33 (coco full dataset) 
-Same as 28, but sparsity learning (100+100 epochs)
-# 
-'
-python yolov8_pruning.py --data=coco.yaml
