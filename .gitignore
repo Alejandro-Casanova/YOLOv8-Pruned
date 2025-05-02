@@ -120,7 +120,7 @@ venv.bak/
 .spyproject
 
 # VSCode project settings
-.vscode/
+# .vscode/
 
 # Rope project settings
 .ropeproject
@@ -171,3 +171,4 @@ calibration_*.npy
 # My stuff
 **/nohup.out
 prune_results/*
+selected_prune_results_recovered/*.png
