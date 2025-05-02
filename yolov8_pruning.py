@@ -32,131 +32,8 @@ from ultralytics.utils.torch_utils import initialize_weights, de_parallel
 from ultralytics.utils import checks
 from ultralytics.cfg import TASK2DATA
 import logging
-
+from Plotter import Plotter
 import torch_pruning as tp
-
-class Plotter:
-
-    def __init__(self):
-        self._currentPlot = 0 # Plot index corresponding to current run
-        self._out_dir = "prune_results"
-        if not os.path.exists(self._out_dir):
-            os.makedirs(self._out_dir)
-        self._filename = f"{self._out_dir}/pruning_perf_change"
-
-        # Find next free index to save plot
-        while glob.glob('{}_{:d}.*'.format(self._filename, self._currentPlot)):
-            self._currentPlot += 1
-        
-        # Append index to filename
-        self._filename = '{}_{:d}'.format(self._filename, self._currentPlot)
-
-        LOGGER.addHandler(logging.FileHandler(self._filename + ".log"))
-
-    def append_dict_to_log(
-        self, 
-        dict: dict = {},
-        description: str = "" 
-    ):
-        # Save the console args passed to script
-        with open('{}.txt'.format(self._filename), 'a') as f:
-            #f.write(json.dumps(dict))
-            f.write("\n" + description + "\n")
-            pprint.pprint(dict, f)
-
-    def save_pruning_performance_graph(
-        self,
-        x, y1, y2, y3,
-        subTitleStr: str = ""
-    ) -> int: 
-        """
-        Draw performance change graph
-        Each call will overwrite the graph corresponding to the current run. On the next run, the graph index will be incremented.
-        Also saves plot data as json file.
-
-        Parameters
-        ----------
-        x : List
-            Parameter numbers of all pruning steps
-        y1 : List
-            mAPs after fine-tuning of all pruning steps
-        y2 : List
-            MACs of all pruning steps
-        y3 : List
-            mAPs after pruning (not fine-tuned) of all pruning steps
-
-        Returns
-        -------
-
-        """
-        try:
-            plt.style.use("ggplot")
-        except:
-            pass
-
-        x, y1, y2, y3 = np.array(x), np.array(y1), np.array(y2), np.array(y3)
-        y2_ratio = y2 / y2[0]
-
-        # create the figure and the axis object
-        fig, ax = plt.subplots(figsize=(8, 6))
-
-        # plot the pruned mAP and recovered mAP
-        ax.set_xlabel('Model size (1 - pruning ratio) %')
-        ax.set_ylabel('mAP')
-        ax.plot(x, y1, label='recovered mAP')
-        ax.scatter(x, y1)
-        ax.plot(x, y3, color='tab:gray', label='pruned mAP')
-        ax.scatter(x, y3, color='tab:gray')
-
-        # create a second axis that shares the same x-axis
-        ax2 = ax.twinx()
-
-        # plot the second set of data
-        ax2.set_ylabel('MACs')
-        ax2.plot(x, y2_ratio, color='tab:orange', label='MACs')
-        ax2.scatter(x, y2_ratio, color='tab:orange')
-
-        # add a legend
-        lines, labels = ax.get_legend_handles_labels()
-        lines2, labels2 = ax2.get_legend_handles_labels()
-        ax2.legend(lines + lines2, labels + labels2, loc='best')
-
-        # set plot limits
-        ax.set_xlim(105, -5)
-        ax.set_ylim(0, max(y1) + 0.05)
-        ax2.set_ylim(0.05, 1.05)
-
-        # calculate the highest and lowest points for each set of data
-        max_y1_idx = np.argmax(y1)
-        min_y1_idx = np.argmin(y1)
-        max_y2_idx = np.argmax(y2)
-        min_y2_idx = np.argmin(y2)
-        max_y1 = y1[max_y1_idx]
-        min_y1 = y1[min_y1_idx]
-        max_y2 = y2_ratio[max_y2_idx]
-        min_y2 = y2_ratio[min_y2_idx]
-
-        # add text for the highest and lowest values near the points
-        ax.text(x[max_y1_idx], max_y1 - 0.05, f'max mAP = {100.0*max_y1:.2f}%', fontsize=10)
-        ax.text(x[min_y1_idx], min_y1 + 0.02, f'min mAP = {100.0*min_y1:.2f}%', fontsize=10)
-        ax2.text(x[max_y2_idx], max_y2 - 0.05, f'max MACs = {max_y2 * y2[0] / 1e9:.2f}G', fontsize=10)
-        ax2.text(x[min_y2_idx], min_y2 + 0.02, f'min MACs = {min_y2 * y2[0] / 1e9:.2f}G', fontsize=10)
-
-        plt.title('Comparison of mAP and MACs with Pruning Ratio')
-        plt.suptitle(subTitleStr)
-        
-        # Write/overwrite the plot corresponding to current run
-        plt.savefig('{}.png'.format(self._filename))
-
-        # Save plot data as json file too
-        dict_to_save = {
-            "x": x.tolist(),
-            "y1": y1.tolist(),
-            "y2": y2.tolist(),
-            "y3": y3.tolist()
-        }
-        with open('{}.json'.format(self._filename), "w") as fp:
-            json.dump(dict_to_save , fp) 
 
 def infer_shortcut(bottleneck):
     c1 = bottleneck.cv1.conv.in_channels
@@ -527,7 +404,7 @@ def setup_pruner(args):
 #     return [pruning_ratio * pruning_ratio_dict for i in range(steps)]
 
 def train(args, plotter: Plotter):
-    # load trained yolov8 model
+    # load trained YOLOv8 model
     model = YOLO(args.model)
 
     # Append tweaked training function to model
@@ -535,7 +412,7 @@ def train(args, plotter: Plotter):
 
     # Load Config
     pruning_cfg = yaml_load(check_yaml(args.cfg_file))
-    pruning_cfg['project'] = "runs/" + pruning_cfg["task"] + "/" + time.strftime("%Y-%m-%d-%H:%M") # Save each run in sepparate folder
+    pruning_cfg['project'] = "runs/" + pruning_cfg["task"] + "/" + time.strftime("%Y-%m-%d-%H:%M") # Save each run in separate folder
     batch_size = pruning_cfg['batch']
 
     if args.data is not None: # Overwrite choice from config file, if script argument is provided
@@ -550,8 +427,8 @@ def train(args, plotter: Plotter):
         param.requires_grad = True
 
     example_inputs = torch.randn(1, 3, pruning_cfg["imgsz"], pruning_cfg["imgsz"]).to(model.device)
-    macs_list, nparams_list, map_list, pruned_map_list = [], [], [], [] # Will store metrics during iterative pruning process
-    base_macs, base_nparams = tp.utils.count_ops_and_params(model.model, example_inputs) # Baseline metrics
+    flops_list, num_params_list, map_list, pruned_map_list = [], [], [], [] # Will store metrics during iterative pruning process
+    base_flops, base_num_params = tp.utils.count_ops_and_params(model.model, example_inputs) # Baseline metrics
 
     # do validation before pruning model
     pruning_cfg['name'] = f"baseline_val"
@@ -563,8 +440,8 @@ def train(args, plotter: Plotter):
     #pruning_cfg['data'] = "coco128.yaml"
 
     init_map = metric.box.map
-    macs_list.append(base_macs)
-    nparams_list.append(100) # save as % of baseline
+    flops_list.append(base_flops)
+    num_params_list.append(100) # save as % of baseline
     map_list.append(init_map)
     pruned_map_list.append(init_map)
     LOGGER.info(f"Before Train: mAP={init_map: .5f}")
@@ -591,15 +468,15 @@ def train(args, plotter: Plotter):
     LOGGER.info(f"After fine tuning mAP={current_map}")
 
     # Save post fine-tuning validation metrics
-    macs_list.append(base_macs)
-    nparams_list.append(100) # save as % of baseline
+    flops_list.append(base_flops)
+    num_params_list.append(100) # save as % of baseline
     pruned_map_list.append(init_map)
     map_list.append(current_map)
 
     # Plot results for each iteration
     plotter.save_pruning_performance_graph(
-        nparams_list, 
-        map_list, macs_list, 
+        num_params_list, 
+        map_list, flops_list, 
         pruned_map_list,
         subTitleStr=f"{pruning_cfg['project']} : {args.model} - steps: {args.iterative_steps} - target: {args.target_prune_rate}"
     )
@@ -641,7 +518,7 @@ def progressive_pruning(
         pruned_flops, pruned_params = tp.utils.count_ops_and_params(model, example_inputs=example_inputs)
         current_compression_rate = float(base_params) / pruned_params
         current_prune_rate = ( float(base_params) - pruned_params ) / float(base_params)
-        LOGGER.info(f"Progressive Prunning. Current prune rate: {current_prune_rate} \t - current compression: {current_compression_rate}")
+        LOGGER.info(f"Progressive Pruning. Current prune rate: {current_prune_rate} \t - current compression: {current_compression_rate}")
         
         if pruner.current_step == pruner.iterative_steps:
             LOGGER.warning("WARNING⚠️: Reached max iterative step before desired compression was achieved.")
@@ -665,7 +542,7 @@ class RegularizationCallbacks:
 
     def on_update_regularizer(self, trainer: BaseTrainer):
         LOGGER.debug("UPDATE REG")
-        self.pruner.update_regularizor() ## TODO TYPO IN FUNCTION CALL IN CURRENT VERSION OF LIBBRARY
+        self.pruner.update_regularizor() ## TODO TYPO IN FUNCTION CALL IN CURRENT VERSION OF LIBRARY
 
     def on_regularize(self, trainer: BaseTrainer):
         LOGGER.debug("ON REG")
@@ -689,10 +566,11 @@ def prune(args, plotter: Plotter):
     overwrite_dict(pruning_cfg, vars(args))
 
     # Save path for results
-    pruning_cfg['project'] = "runs/" + pruning_cfg["task"] + "/" + time.strftime("%Y-%m-%d-%H:%M") # Save each run in sepparate folder
+    pruning_cfg['project'] = os.path.join("runs", pruning_cfg["task"], time.strftime("%Y-%m-%d-%H-%M")) # Save each run in separate folder
+    # pruning_cfg['project'] = os.path.abspath(pruning_cfg['project'])
     batch_size = pruning_cfg['batch'] # Save original batch size
 
-    # load trained yolov8 model
+    # load trained YOLOv8 model
     model = YOLO(pruning_cfg["model"])
     # inspect_attributes_and_methods(model)
 
@@ -717,8 +595,8 @@ def prune(args, plotter: Plotter):
         param.requires_grad = True
 
     example_inputs = torch.randn(1, 3, pruning_cfg["imgsz"], pruning_cfg["imgsz"]).to(model.device)
-    macs_list, nparams_list, map_list, pruned_map_list = [], [], [], [] # Will store metrics during iterative pruning process
-    base_macs, base_nparams = tp.utils.count_ops_and_params(model.model, example_inputs) # Baseline metrics
+    flops_list, num_params_list, map_list, pruned_map_list = [], [], [], [] # Will store metrics during iterative pruning process
+    base_flops, base_num_params = tp.utils.count_ops_and_params(model.model, example_inputs) # Baseline metrics
 
     # do validation before pruning model
     pruning_cfg['name'] = f"baseline_val"
@@ -730,16 +608,16 @@ def prune(args, plotter: Plotter):
     #pruning_cfg['data'] = "coco128.yaml"
 
     init_map = metric.box.map
-    macs_list.append(base_macs)
-    nparams_list.append(100) # save as % of baseline
+    flops_list.append(base_flops)
+    num_params_list.append(100) # save as % of baseline
     map_list.append(init_map)
     pruned_map_list.append(init_map)
-    LOGGER.info(f"Before Pruning: MACs={base_macs / 1e9: .5f} G, #Params={base_nparams / 1e6: .5f} M, mAP={init_map: .5f}")
+    LOGGER.info(f"Before Pruning: FLOPs={base_flops / 1e9: .5f} G, #Params={base_num_params / 1e6: .5f} M, mAP={init_map: .5f}")
 
     # prune same ratio of filter based on initial size
     pruning_ratio = 1 - math.pow((1 - args.target_prune_rate), 1 / args.iterative_steps)
     LOGGER.info(f"PRUNE RATIO: {pruning_ratio}")
-    fine_steps = round(100.0 / pruning_ratio) # Steps taken inside torch-pruning to aproach desired prune ratio at give global step
+    fine_steps = round(100.0 / pruning_ratio) # Steps taken inside torch-pruning to approach desired prune ratio at give global step
     LOGGER.info(f"SMOOTH STEPS: {fine_steps}")
     #pruning_ratio = args.target_prune_rate # FOR TESTING: should cut model by half twice if iterative_steps is 2
     
@@ -812,11 +690,11 @@ def prune(args, plotter: Plotter):
         validation_model.model = deepcopy(model.model)
         metric = validation_model.val(**pruning_cfg)
         pruned_map = metric.box.map
-        pruned_macs, pruned_nparams = tp.utils.count_ops_and_params(pruner.model, example_inputs.to(model.device))
-        current_speed_up = float(macs_list[0]) / pruned_macs
+        pruned_flops, pruned_num_params = tp.utils.count_ops_and_params(pruner.model, example_inputs.to(model.device))
+        current_speed_up = float(flops_list[0]) / pruned_flops
 
         if(not args.sparsity_learning or pretraining_done_flag):
-            LOGGER.info(f"After pruning iter {i + 1}: MACs={pruned_macs / 1e9} G, #Params={pruned_nparams / 1e6} M, "
+            LOGGER.info(f"After pruning iter {i + 1}: FLOPs={pruned_flops / 1e9} G, #Params={pruned_num_params / 1e6} M, "
                 f"mAP={pruned_map}, speed up={current_speed_up}")
         else:
             LOGGER.info(f"After Pre-train iter {i}: mAP={pruned_map}")
@@ -847,8 +725,8 @@ def prune(args, plotter: Plotter):
         LOGGER.info(f"After fine tuning mAP={current_map}")
 
         # Save post fine-tuning validation metrics
-        macs_list.append(pruned_macs)
-        nparams_list.append(pruned_nparams / base_nparams * 100)
+        flops_list.append(pruned_flops)
+        num_params_list.append(pruned_num_params / base_num_params * 100)
         pruned_map_list.append(pruned_map)
         map_list.append(current_map)
 
@@ -858,8 +736,8 @@ def prune(args, plotter: Plotter):
         # Plot results for each iteration
         if not args.test_run:
             plotter.save_pruning_performance_graph(
-                nparams_list, 
-                map_list, macs_list, 
+                num_params_list, 
+                map_list, flops_list, 
                 pruned_map_list,
                 subTitleStr=f"{pruning_cfg['project']} : {pruning_cfg['model']} - steps: {args.iterative_steps} - target: {args.target_prune_rate} - epochs: {pruning_cfg['epochs']}"
             )
@@ -911,6 +789,9 @@ def parse_args():
     parser.add_argument('--data', type=str, default=None,
                         #choices=['coco128.yaml', 'coco8.yaml', 'coco.yaml'],
                         help='Set the desired dataset')
+    parser.add_argument("--device", type=str, default='cuda',
+                        choices=['cpu', 'cuda'],
+                        help='Set the desired target device')
     parser.add_argument('--epochs', default=None, type=int, help='Training epochs')
     parser.add_argument("--lrf", type=float, default=None, # Final Learning Rate Multiplier
                         help="Final Learning Rate MULTIPLIER"
