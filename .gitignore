@@ -172,3 +172,5 @@ calibration_*.npy
 **/nohup.out
 prune_results/*
 selected_prune_results_recovered/*.png
+selected_runs/**/*.png
+selected_runs/**/*.jpg

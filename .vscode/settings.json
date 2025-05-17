@@ -2,6 +2,7 @@
     "cmake.ignoreCMakeListsMissing": true,
     "cSpell.words": [
         "accum",
+        "alex",
         "argmin",
         "ckpt",
         "cmap",
@@ -14,6 +15,7 @@
         "FPGM",
         "ggplot",
         "Hyunseok",
+        "imgs",
         "imgsz",
         "imread",
         "imshow",
@@ -23,16 +25,22 @@
         "pretraining",
         "pytorch",
         "randn",
+        "spanish",
         "suptitle",
         "textcoords",
         "twinx",
+        "Ultralytics",
         "viridis",
         "wdir",
+        "xaxis",
         "xlabel",
         "xlim",
         "xytext",
+        "yaxis",
         "ylabel",
         "ylim",
-        "yolo"
+        "yolo",
+        "yolov8",
+        "yolov8n"
     ]
 }
