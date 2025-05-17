@@ -5,6 +5,13 @@ import glob
 import os
 import argparse
 
+axis_names_spanish = {
+    'speedup': 'Aceleración',
+    'prune_ratio': 'Ratio de Poda (%)',
+    'accuracy': 'Precisión mAP50-95 (%)',
+    'acc_drop': 'Diferencia de Precisión (%)'
+}
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Plot Prune Graph")
@@ -13,6 +20,15 @@ if __name__ == "__main__":
     parser.add_argument('-y', '--y-axis', type=str, default='speedup',
                         choices=['speedup', 'prune_ratio', 'accuracy', 'acc_drop'],
                         help='Set the logging level')
+    parser.add_argument('-x', '--x-axis', type=str, default='prune_ratio',
+                        choices=['speedup', 'prune_ratio', 'accuracy', 'acc_drop'],
+                        help='Variable to plot on the x-axis')
+    parser.add_argument('-s', '--spanish', action='store_true', 
+                        help='Use Spanish labels for the plot')
+    parser.add_argument('-i', '--interactive', action='store_true',
+                        help='Use interactive mode for the plot')
+    parser.add_argument('-o', '--output', type=str, default='plot.eps',
+                        help='Output file name for the plot')
     
     args = parser.parse_args()
 
@@ -43,10 +59,14 @@ if __name__ == "__main__":
     # Step 6: Print the DataFrame (optional)
     print(df)
 
+    # Sort the DataFrame by 'prune_ratio'
+    df = df.sort_values(by=args.x_axis)
+    # Reset the index
+    df = df.reset_index(drop=True)
+
     # Step 7: Plot the points
     plt.figure(figsize=(10, 6))
-    scatter = plt.scatter(df['prune_ratio'], df[args.y_axis], alpha=0.7, cmap='viridis', edgecolors='w', linewidth=2.5)
-    # scatter = plt.scatter(df['prune_ratio'], df['accuracy'])
+    plt.plot(df[args.x_axis], df[args.y_axis], marker='o', linestyle='-', color='#00aaff', linewidth=2, alpha=0.8)
 
     # Step 8: Style
 
@@ -54,17 +74,34 @@ if __name__ == "__main__":
     # plt.colorbar(scatter, label='Color Scale')
 
     # Title and Axis Labels
-    plt.title('Prune Results', fontsize=16, fontweight='bold')
-    plt.xlabel('Prune Ratio', fontsize=14)
-    plt.ylabel(args.y_axis, fontsize=14)
+    plt.title(
+        'Prune Results' if not args.spanish else 'Resultados de la Poda', 
+        fontsize=16, fontweight='bold')
+    plt.xlabel(
+        args.x_axis if not args.spanish else axis_names_spanish[args.x_axis], 
+        fontsize=14)
+    plt.ylabel(
+        args.y_axis if not args.spanish else axis_names_spanish[args.y_axis], 
+        fontsize=14)
 
     # Add grid lines
     plt.grid(True, linestyle='--', alpha=0.7)
 
     # Add annotations for each point
     for i in range(len(df)):
-        plt.annotate(f'({df["prune_ratio"][i]:.2f}, {df[args.y_axis][i]:.2f})', (df['prune_ratio'][i], df[args.y_axis][i]), textcoords="offset points", xytext=(0,10), ha='center', fontsize=8)
+        plt.annotate(
+            f'({df[args.x_axis][i]:.2f}, {df[args.y_axis][i]:.2f})', 
+            (df[args.x_axis][i], df[args.y_axis][i]), 
+            textcoords="offset points", 
+            xytext=(0,10), 
+            ha='center', 
+            fontsize=8)
 
     # Show the plot
     plt.tight_layout()
-    plt.show()
+
+    # Save the plot to a file
+    plt.savefig(args.output, format=args.output.split('.')[-1], dpi=300, bbox_inches='tight')
+
+    if args.interactive:
+        plt.show()
