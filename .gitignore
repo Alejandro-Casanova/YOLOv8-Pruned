@@ -177,3 +177,4 @@ selected_runs/**/*.jpg
 !selected_prune_results/*
 
 .venv-2
+test.bat
