@@ -1,0 +1,6 @@
+{
+    "inference speed (ms)": 256.6765356063843,
+    "FPS": 3.89595409505413,
+    "model_class": "imgsz640_q8",
+    "seed": 4
+}
