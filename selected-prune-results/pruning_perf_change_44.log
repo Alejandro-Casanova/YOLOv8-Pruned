@@ -1,0 +1,839 @@
+Over-writing config file parameters with provided cli arguments...
+Ultralytics YOLOv8.2.64 🚀 Python-3.9.19 torch-2.3.1+cu121 CUDA:0 (NVIDIA GeForce RTX 3070, 7966MiB)
+Model summary (fused): 185 layers, 3,007,598 parameters, 14,446 gradients, 8.1 GFLOPs
+[34m[1mval: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/val/20210000051.jpg: corrupt JPEG restored and saved
+[34m[1mval: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/val/20210000061.jpg: corrupt JPEG restored and saved
+                   all       1392       2579      0.804      0.705      0.787      0.661
+        Not Recyclable        182        261      0.878      0.772      0.863      0.702
+            Food waste        155        340      0.889      0.731      0.845      0.659
+                 Glass        145        186      0.738      0.694      0.757      0.672
+               Textile        164        192      0.864      0.826      0.883      0.805
+                 Metal        229        302      0.694      0.626      0.698      0.564
+                Wooden        148        189       0.79      0.667      0.779      0.623
+               Leather        140        151      0.909      0.794      0.862      0.769
+               Plastic        289        417      0.716      0.594      0.696      0.595
+               Ceramic        140        381       0.81      0.707      0.788      0.643
+                 Paper        134        160      0.749      0.635      0.701      0.581
+Speed: 0.2ms preprocess, 7.2ms inference, 0.0ms loss, 0.5ms postprocess per image
+Results saved to [1mruns/detect/2024-08-28-22:51/baseline_val[0m
+Before Pruning: MACs= 4.07545 G, #Params= 3.01280 M, mAP= 0.66136
+PRUNE RATIO: 0.9
+SMOOTH STEPS: 111
+Started pruning for iter 1
+Progressive Prunning. Current prune rate: 0.0255589654533759 	 - current compression: 1.0262293607794006
+Progressive Prunning. Current prune rate: 0.04051781765654385 	 - current compression: 1.0422288380150868
+Progressive Prunning. Current prune rate: 0.05015636627480501 	 - current compression: 1.0528048665000749
+Progressive Prunning. Current prune rate: 0.06796804830592691 	 - current compression: 1.0729245903881164
+Progressive Prunning. Current prune rate: 0.07746221286657784 	 - current compression: 1.083966439041239
+Progressive Prunning. Current prune rate: 0.09198492564055075 	 - current compression: 1.1013033023768253
+Progressive Prunning. Current prune rate: 0.1162099151685576 	 - current compression: 1.1314904038448466
+Progressive Prunning. Current prune rate: 0.1254398734996505 	 - current compression: 1.1434319604777916
+Progressive Prunning. Current prune rate: 0.1395437065478668 	 - current compression: 1.1621740785787273
+Progressive Prunning. Current prune rate: 0.1499854952107642 	 - current compression: 1.176450512745019
+Progressive Prunning. Current prune rate: 0.1654199850106114 	 - current compression: 1.1982074600872328
+Progressive Prunning. Current prune rate: 0.17436980507820304 	 - current compression: 1.2111960126345902
+Progressive Prunning. Current prune rate: 0.1880374986972243 	 - current compression: 1.2315839689585693
+Progressive Prunning. Current prune rate: 0.21080006027619508 	 - current compression: 1.2671060268326535
+Progressive Prunning. Current prune rate: 0.2194856741142287 	 - current compression: 1.28120646455162
+Progressive Prunning. Current prune rate: 0.23273448800749336 	 - current compression: 1.30332979179933
+Progressive Prunning. Current prune rate: 0.2425655487025682 	 - current compression: 1.3202462579924514
+Progressive Prunning. Current prune rate: 0.2570368142835995 	 - current compression: 1.3459617101158954
+Progressive Prunning. Current prune rate: 0.2654422898581319 	 - current compression: 1.3613634248109192
+Progressive Prunning. Current prune rate: 0.2852766763652923 	 - current compression: 1.3991428108355621
+Progressive Prunning. Current prune rate: 0.2995550979521362 	 - current compression: 1.427664041920126
+Progressive Prunning. Current prune rate: 0.30769636729711053 	 - current compression: 1.4444529145337623
+Progressive Prunning. Current prune rate: 0.321312945640564 	 - current compression: 1.4734331435625043
+Progressive Prunning. Current prune rate: 0.32931049476267577 	 - current compression: 1.49100290401316
+Progressive Prunning. Current prune rate: 0.3428185361248912 	 - current compression: 1.5216497344636621
+Progressive Prunning. Current prune rate: 0.35067966720636434 	 - current compression: 1.540071902103543
+Progressive Prunning. Current prune rate: 0.3691810735402772 	 - current compression: 1.5852409591008825
+Progressive Prunning. Current prune rate: 0.3824750281963809 	 - current compression: 1.6193677108786022
+Progressive Prunning. Current prune rate: 0.39007195304829595 	 - current compression: 1.639537655298516
+Progressive Prunning. Current prune rate: 0.4027671287620345 	 - current compression: 1.6743887487759415
+Progressive Prunning. Current prune rate: 0.41022033339108693 	 - current compression: 1.6955484507456018
+Progressive Prunning. Current prune rate: 0.42276515053448654 	 - current compression: 1.7323971359767052
+Progressive Prunning. Current prune rate: 0.4400613648840712 	 - current compression: 1.7859099859986651
+Progressive Prunning. Current prune rate: 0.44725036328356566 	 - current compression: 1.8091373265126345
+Progressive Prunning. Current prune rate: 0.45955985100892927 	 - current compression: 1.8503436539029638
+Progressive Prunning. Current prune rate: 0.46771107787511806 	 - current compression: 1.8786789625604625
+Progressive Prunning. Current prune rate: 0.47838620445180857 	 - current compression: 1.9171272089325155
+Progressive Prunning. Current prune rate: 0.48529506458780175 	 - current compression: 1.9428607172751438
+Progressive Prunning. Current prune rate: 0.4968766575123855 	 - current compression: 1.987584187717582
+Progressive Prunning. Current prune rate: 0.5128398916887226 	 - current compression: 2.0527132311109444
+Progressive Prunning. Current prune rate: 0.5194845455951578 	 - current compression: 2.0810985179208896
+Progressive Prunning. Current prune rate: 0.5308095663897812 	 - current compression: 2.1313307526443572
+Progressive Prunning. Current prune rate: 0.5383500652881474 	 - current compression: 2.166143488407875
+Progressive Prunning. Current prune rate: 0.5481701727098863 	 - current compression: 2.213222632949183
+Progressive Prunning. Current prune rate: 0.5545346883528202 	 - current compression: 2.244843703547508
+Progressive Prunning. Current prune rate: 0.5703820833656953 	 - current compression: 2.3276496656241887
+Progressive Prunning. Current prune rate: 0.5797833110616776 	 - current compression: 2.3797246190447603
+Progressive Prunning. Current prune rate: 0.5858836204750534 	 - current compression: 2.4147801184467745
+Progressive Prunning. Current prune rate: 0.5971980199137148 	 - current compression: 2.482609444436662
+Progressive Prunning. Current prune rate: 0.6031539452694804 	 - current compression: 2.519868820868221
+Progressive Prunning. Current prune rate: 0.6121190335362676 	 - current compression: 2.578110519618657
+Progressive Prunning. Current prune rate: 0.6179392046861423 	 - current compression: 2.6173844902838397
+Progressive Prunning. Current prune rate: 0.6323454144619055 	 - current compression: 2.719944315494972
+Progressive Prunning. Current prune rate: 0.6408916230029361 	 - current compression: 2.7846746666346247
+Progressive Prunning. Current prune rate: 0.6464475879232527 	 - current compression: 2.828434952900068
+Progressive Prunning. Current prune rate: 0.6567111369564106 	 - current compression: 2.9129986657126836
+Progressive Prunning. Current prune rate: 0.662122717819117 	 - current compression: 2.9596544447893622
+Progressive Prunning. Current prune rate: 0.6702327869309526 	 - current compression: 3.0324421603145173
+Progressive Prunning. Current prune rate: 0.6833262634932711 	 - current compression: 3.157824235855919
+Progressive Prunning. Current prune rate: 0.6884736381264194 	 - current compression: 3.2100012146188974
+Progressive Prunning. Current prune rate: 0.6961648275124983 	 - current compression: 3.291258190462249
+Progressive Prunning. Current prune rate: 0.7011764479397556 	 - current compression: 3.3464564392782368
+Progressive Prunning. Current prune rate: 0.7103891465674101 	 - current compression: 3.452909268239013
+Progressive Prunning. Current prune rate: 0.7152563829370572 	 - current compression: 3.5119312254116277
+Progressive Prunning. Current prune rate: 0.7225114328939412 	 - current compression: 3.603752076811835
+Progressive Prunning. Current prune rate: 0.7341637242191478 	 - current compression: 3.7617138483551855
+Progressive Prunning. Current prune rate: 0.7387667543592368 	 - current compression: 3.827996691413303
+Progressive Prunning. Current prune rate: 0.7456029245903641 	 - current compression: 3.9308627993846934
+Progressive Prunning. Current prune rate: 0.7508535255267694 	 - current compression: 4.0137031925267905
+Progressive Prunning. Current prune rate: 0.7582320487467132 	 - current compression: 4.136197518389672
+Progressive Prunning. Current prune rate: 0.762554940623301 	 - current compression: 4.211500557750211
+Progressive Prunning. Current prune rate: 0.7723919758311045 	 - current compression: 4.393518214709138
+Progressive Prunning. Current prune rate: 0.7791660775133281 	 - current compression: 4.528289805930308
+Progressive Prunning. Current prune rate: 0.7832247631603579 	 - current compression: 4.61307303628847
+Progressive Prunning. Current prune rate: 0.7892059142365336 	 - current compression: 4.743966114505259
+Progressive Prunning. Current prune rate: 0.7938457872051163 	 - current compression: 4.850737641704006
+Progressive Prunning. Current prune rate: 0.8002398434943199 	 - current compression: 5.00600328660418
+Progressive Prunning. Current prune rate: 0.8040183908778484 	 - current compression: 5.102519590890384
+Progressive Prunning. Current prune rate: 0.8125224459124043 	 - current compression: 5.33397187128208
+Progressive Prunning. Current prune rate: 0.8183333233758121 	 - current compression: 5.504586854245649
+Progressive Prunning. Current prune rate: 0.8218476645297826 	 - current compression: 5.613173677238573
+Progressive Prunning. Current prune rate: 0.8276323205206588 	 - current compression: 5.801551677325061
+Progressive Prunning. Current prune rate: 0.8310029414517668 	 - current compression: 5.917262753508761
+Progressive Prunning. Current prune rate: 0.8364125308102303 	 - current compression: 6.112937653188761
+Progressive Prunning. Current prune rate: 0.8437113938604579 	 - current compression: 6.3984190831361785
+Progressive Prunning. Current prune rate: 0.8468178085620078 	 - current compression: 6.528174003861263
+Progressive Prunning. Current prune rate: 0.8516654618065997 	 - current compression: 6.741518274700046
+Progressive Prunning. Current prune rate: 0.8546354584675109 	 - current compression: 6.879256725592185
+Progressive Prunning. Current prune rate: 0.8594987118286722 	 - current compression: 7.117372466938498
+Progressive Prunning. Current prune rate: 0.8623249882667209 	 - current compression: 7.263482220995354
+Progressive Prunning. Current prune rate: 0.8667501106944442 	 - current compression: 7.504696665877869
+Progressive Prunning. Current prune rate: 0.8727159935714243 	 - current compression: 7.856446603612695
+Progressive Prunning. Current prune rate: 0.8752780637799149 	 - current compression: 8.017835757740272
+Progressive Prunning. Current prune rate: 0.8791624928056909 	 - current compression: 8.275576211548128
+Progressive Prunning. Current prune rate: 0.8821225319453876 	 - current compression: 8.48338547224905
+Progressive Prunning. Current prune rate: 0.8855299957049891 	 - current compression: 8.735913011960855
+Progressive Prunning. Current prune rate: 0.8878119276499785 	 - current compression: 8.913603550295859
+Progressive Prunning. Current prune rate: 0.8928969018168493 	 - current compression: 9.336798066195612
+Progressive Prunning. Current prune rate: 0.8958854858506943 	 - current compression: 9.60480878358561
+Progressive Prunning. Current prune rate: 0.8979032115661256 	 - current compression: 9.794627385832761
+Progressive Prunning. Current prune rate: 0.9008244163730857 	 - current compression: 10.083126949490623
+Ultralytics YOLOv8.2.64 🚀 Python-3.9.19 torch-2.3.1+cu121 CUDA:0 (NVIDIA GeForce RTX 3070, 7966MiB)
+Model summary (fused): 185 layers, 297,663 parameters, 14,446 gradients, 1.5 GFLOPs
+[34m[1mval: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/val/20210000051.jpg: corrupt JPEG restored and saved
+[34m[1mval: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/val/20210000061.jpg: corrupt JPEG restored and saved
+                   all       1392       2579   3.83e-06     0.0053   2.39e-06    5.5e-07
+        Not Recyclable        182        261          0          0          0          0
+            Food waste        155        340          0          0          0          0
+                 Glass        145        186          0          0          0          0
+               Textile        164        192          0          0          0          0
+                 Metal        229        302   3.83e-05      0.053   2.39e-05    5.5e-06
+                Wooden        148        189          0          0          0          0
+               Leather        140        151          0          0          0          0
+               Plastic        289        417          0          0          0          0
+               Ceramic        140        381          0          0          0          0
+                 Paper        134        160          0          0          0          0
+Speed: 0.2ms preprocess, 6.3ms inference, 0.0ms loss, 2.5ms postprocess per image
+Results saved to [1mruns/detect/2024-08-28-22:51/step_1_pre_val[0m
+After pruning iter 2: MACs=0.7514984 G, #Params=0.298796 M, mAP=5.497853335109534e-07, speed up=5.4230992374701
+New https://pypi.org/project/ultralytics/8.2.82 available 😃 Update with 'pip install -U ultralytics'
+Ultralytics YOLOv8.2.64 🚀 Python-3.9.19 torch-2.3.1+cu121 CUDA:0 (NVIDIA GeForce RTX 3070, 7966MiB)
+[34m[1mengine/trainer: [0mtask=detect, mode=train, model=my-models/trash_yolov8n_pretrained.pt, data=my_datasets/trash-detect.yaml, epochs=300, time=None, patience=150, batch=16, imgsz=640, save=True, save_period=-1, cache=False, device=None, workers=8, project=runs/detect/2024-08-28-22:51, name=step_1_finetune, exist_ok=False, pretrained=True, optimizer=Adam, verbose=True, seed=0, deterministic=True, single_cls=False, rect=False, cos_lr=False, close_mosaic=50, resume=False, amp=True, fraction=1.0, profile=False, freeze=None, multi_scale=True, overlap_mask=True, mask_ratio=4, dropout=0.0, val=True, split=val, save_json=False, save_hybrid=False, conf=None, iou=0.5, max_det=300, half=False, dnn=False, plots=True, source=None, vid_stride=1, stream_buffer=False, visualize=False, augment=True, agnostic_nms=False, classes=None, retina_masks=False, embed=None, show=False, save_frames=False, save_txt=False, save_conf=False, save_crop=False, show_labels=True, show_conf=True, show_boxes=True, line_width=None, format=torchscript, keras=False, optimize=False, int8=False, dynamic=False, simplify=False, opset=None, workspace=2, nms=False, lr0=0.0001, lrf=0.1, momentum=0.937, weight_decay=0.0005, warmup_epochs=3.0, warmup_momentum=0.8, warmup_bias_lr=0.1, box=7.5, cls=0.5, dfl=1.5, pose=12.0, kobj=1.0, label_smoothing=0.0, nbs=64, hsv_h=0.015, hsv_s=0.7, hsv_v=0.4, degrees=0.0, translate=0.1, scale=0.5, shear=0.0, perspective=0.0, flipud=0.0, fliplr=0.5, bgr=0.0, mosaic=1.0, mixup=0.0, copy_paste=0.0, auto_augment=randaugment, erasing=0.4, crop_fraction=1.0, cfg=None, tracker=botsort.yaml, save_dir=runs/detect/2024-08-28-22:51/step_1_finetune
+Freezing layer 'model.22.dfl.conv.weight'
+[34m[1mAMP: [0mrunning Automatic Mixed Precision (AMP) checks with YOLOv8n...
+[34m[1mAMP: [0mchecks passed ✅
+[34m[1mtrain: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/train/20210000025.jpg: corrupt JPEG restored and saved
+[34m[1mtrain: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/train/20210000027.jpg: corrupt JPEG restored and saved
+[34m[1mtrain: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/train/20210000031.jpg: corrupt JPEG restored and saved
+[34m[1mtrain: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/train/20210000039.jpg: corrupt JPEG restored and saved
+[34m[1mtrain: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/train/20210000041.jpg: corrupt JPEG restored and saved
+[34m[1mtrain: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/train/20210000053.jpg: corrupt JPEG restored and saved
+[34m[1mtrain: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/train/20210000056.jpg: corrupt JPEG restored and saved
+[34m[1mtrain: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/train/20210000062.jpg: corrupt JPEG restored and saved
+[34m[1mtrain: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/train/20210000064.jpg: corrupt JPEG restored and saved
+[34m[1mtrain: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/train/20210000068.jpg: corrupt JPEG restored and saved
+[34m[1mval: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/val/20210000051.jpg: corrupt JPEG restored and saved
+[34m[1mval: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/val/20210000061.jpg: corrupt JPEG restored and saved
+Plotting labels to runs/detect/2024-08-28-22:51/step_1_finetune/labels.jpg... 
+[34m[1moptimizer:[0m Adam(lr=0.0001, momentum=0.937) with parameter groups 65 weight(decay=0.0), 72 weight(decay=0.0005), 71 bias(decay=0.0)
+Image sizes 640 train, 640 val
+Using 8 dataloader workers
+Logging results to [1mruns/detect/2024-08-28-22:51/step_1_finetune[0m
+Starting training for 300 epochs...
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00126      0.208      0.001    0.00025
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00317      0.555    0.00297   0.000992
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579     0.0031      0.524    0.00469    0.00167
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00384      0.566    0.00932     0.0042
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00342      0.501    0.00602    0.00237
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00401      0.536     0.0094    0.00301
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00432      0.558     0.0135    0.00527
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00443      0.524     0.0197    0.00792
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00353      0.586    0.00837    0.00283
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579     0.0034      0.576     0.0114    0.00316
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00364      0.577     0.0214     0.0076
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579     0.0041      0.588     0.0189    0.00594
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00396      0.585     0.0216    0.00884
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00386      0.616     0.0224    0.00763
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.72      0.146      0.027    0.00963
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.63     0.0418     0.0277     0.0106
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00395      0.623     0.0116    0.00421
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00456      0.617     0.0168    0.00524
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00505      0.626     0.0221    0.00759
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579    0.00459      0.664     0.0178    0.00524
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579     0.0049      0.667     0.0268    0.00829
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.108     0.0774     0.0337     0.0105
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579     0.0283      0.424       0.04     0.0137
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.327     0.0707     0.0418     0.0138
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.229     0.0735     0.0447     0.0156
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.087      0.138     0.0438     0.0165
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.189      0.108     0.0499     0.0182
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.322     0.0611      0.048     0.0184
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579     0.0703      0.235     0.0461     0.0174
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.215     0.0615     0.0528     0.0211
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.109     0.0678     0.0542     0.0228
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579     0.0962      0.164     0.0507      0.018
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.261     0.0609     0.0581     0.0229
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.129      0.109     0.0605     0.0238
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.167     0.0854     0.0665     0.0274
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.156     0.0948     0.0637     0.0268
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.225      0.068     0.0624     0.0257
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.245     0.0831     0.0633     0.0271
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.119      0.134     0.0612     0.0246
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.15      0.112     0.0657     0.0277
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.307      0.111     0.0602     0.0259
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.117      0.132     0.0635     0.0267
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.206     0.0857     0.0563     0.0238
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.232      0.144       0.07     0.0309
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.221     0.0947     0.0632      0.028
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.148      0.059     0.0542     0.0226
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.161     0.0907     0.0595     0.0254
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.187      0.135     0.0678     0.0302
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.157      0.138     0.0653     0.0286
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.204      0.116     0.0653     0.0294
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.199     0.0738     0.0594     0.0264
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.162      0.118     0.0604     0.0255
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.139      0.138     0.0638     0.0274
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.159      0.141     0.0613     0.0265
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.196      0.123     0.0655     0.0292
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.15      0.159     0.0702     0.0325
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.176      0.121     0.0656     0.0295
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.168      0.139     0.0642     0.0297
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.173      0.122     0.0681      0.031
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.109      0.131     0.0647     0.0298
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.171      0.126     0.0632     0.0284
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.221      0.124     0.0639     0.0306
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.178      0.134      0.061     0.0284
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.153       0.14      0.065     0.0295
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.179       0.14     0.0654     0.0296
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.162      0.133     0.0637     0.0291
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.215      0.138     0.0636     0.0304
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.223      0.129     0.0606     0.0276
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.166      0.135     0.0602     0.0283
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.148      0.142     0.0642       0.03
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.154      0.168     0.0612     0.0289
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.152      0.136     0.0614     0.0294
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.18       0.14     0.0633     0.0303
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.138      0.151     0.0631     0.0299
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.206      0.164     0.0635     0.0299
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.214      0.171      0.064     0.0307
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.199      0.164     0.0636     0.0307
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.233      0.158     0.0638     0.0302
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.215      0.155     0.0609     0.0293
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.241      0.127     0.0618     0.0301
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.247      0.153     0.0613     0.0295
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.207      0.167     0.0606     0.0292
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.225       0.16     0.0592     0.0288
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.224      0.163     0.0599     0.0281
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.175      0.163     0.0614     0.0296
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.209      0.168     0.0632       0.03
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.205      0.172     0.0627     0.0303
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.171      0.171     0.0634     0.0309
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.156      0.186     0.0632     0.0304
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.182      0.181      0.062     0.0299
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.163      0.175     0.0602     0.0287
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.165      0.176     0.0613     0.0295
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.179      0.166     0.0585      0.028
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.175      0.172     0.0609     0.0294
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.147       0.17     0.0603     0.0292
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.146      0.154     0.0597     0.0287
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.14      0.167     0.0599     0.0288
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.145      0.164     0.0595     0.0288
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.155      0.154     0.0572     0.0274
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.15      0.147     0.0555     0.0268
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.151      0.151     0.0589     0.0283
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.314      0.137     0.0542     0.0267
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.185      0.147     0.0569     0.0272
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.177      0.154     0.0587     0.0279
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.159       0.16     0.0609     0.0289
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.16      0.167     0.0628       0.03
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.136      0.164     0.0595     0.0284
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.31      0.138     0.0532     0.0256
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.446      0.132     0.0519      0.025
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.304      0.137     0.0543     0.0261
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.193      0.142     0.0554     0.0269
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.188      0.147      0.058     0.0279
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.178      0.145     0.0567     0.0276
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.175      0.151     0.0573     0.0278
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.162      0.157      0.059     0.0282
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.17      0.158     0.0586      0.028
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.163      0.164     0.0591     0.0284
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.162      0.163     0.0597     0.0288
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.145      0.165     0.0592     0.0288
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.138      0.164     0.0598     0.0288
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.141      0.163     0.0592     0.0287
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.139      0.168     0.0595     0.0288
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.146      0.171       0.06     0.0291
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.15      0.174     0.0609     0.0295
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.126      0.174     0.0611     0.0295
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.147      0.173     0.0607     0.0292
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.142      0.173     0.0606     0.0293
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.137      0.174     0.0613     0.0294
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.128      0.172     0.0616     0.0297
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.14      0.174     0.0617     0.0296
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.139      0.173     0.0624     0.0297
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.14      0.175     0.0622     0.0298
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.141      0.172     0.0627     0.0299
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.135      0.175     0.0627       0.03
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.135      0.175     0.0626     0.0302
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.142      0.177      0.063     0.0304
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.141      0.179     0.0639     0.0307
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.159      0.179     0.0644      0.031
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.145      0.179     0.0638     0.0309
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.149      0.181     0.0644     0.0311
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.144       0.18     0.0649     0.0313
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.152      0.181      0.065     0.0313
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.15      0.181     0.0651     0.0314
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.145      0.184      0.065     0.0315
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.156      0.184     0.0649     0.0315
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.155      0.185     0.0646     0.0314
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.143      0.186     0.0646     0.0314
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.152      0.189     0.0644     0.0314
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.152      0.187     0.0643     0.0313
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.158      0.186     0.0637     0.0311
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.162      0.186     0.0632     0.0308
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.161      0.186     0.0637      0.031
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.156      0.186     0.0635      0.031
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.163      0.186     0.0637     0.0313
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.164      0.186     0.0641     0.0313
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.157      0.189     0.0643     0.0315
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.165       0.19      0.064     0.0313
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.16      0.189     0.0639     0.0312
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.161       0.19     0.0643     0.0315
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.16      0.191     0.0647     0.0317
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.162      0.191     0.0643     0.0314
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.169      0.187     0.0637      0.031
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.164      0.187     0.0638     0.0313
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.169      0.189     0.0643     0.0315
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.162      0.188     0.0643     0.0315
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.153      0.189     0.0645     0.0316
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.143      0.188     0.0645     0.0316
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.143      0.189      0.065     0.0317
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.143       0.19     0.0649     0.0318
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.142      0.189      0.065     0.0315
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.142      0.189     0.0653     0.0319
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.142      0.189     0.0648     0.0315
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.144      0.191     0.0651     0.0317
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.144       0.19     0.0659     0.0322
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.144      0.191     0.0649     0.0315
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.146      0.192     0.0654      0.032
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.144      0.192     0.0654      0.032
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.142      0.193     0.0656     0.0321
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.139      0.191     0.0649     0.0317
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.146      0.192     0.0644     0.0314
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.136      0.191      0.064     0.0313
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.141      0.193     0.0643     0.0315
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.142      0.192     0.0648     0.0317
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.145      0.191     0.0651     0.0319
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.144      0.192     0.0649     0.0317
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.143      0.189      0.064     0.0315
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.143       0.19     0.0643     0.0316
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.145       0.19     0.0644     0.0316
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.145      0.189     0.0646     0.0316
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.146       0.19     0.0637     0.0311
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.147      0.188     0.0638     0.0312
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.147      0.187     0.0637     0.0313
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.147      0.188     0.0641     0.0315
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.148      0.188     0.0634     0.0312
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.142       0.19     0.0635     0.0312
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.143      0.191     0.0633      0.031
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.144      0.192     0.0632     0.0309
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.142      0.191     0.0628     0.0308
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.14      0.192     0.0627     0.0306
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579       0.14      0.192     0.0623     0.0305
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.139      0.193     0.0621     0.0305
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.138      0.192     0.0617     0.0303
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.131      0.196     0.0614     0.0302
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.134      0.195     0.0605     0.0298
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.136      0.195     0.0607     0.0298
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+                   all       1392       2579      0.126      0.193     0.0596     0.0295
+[34m[1mEarlyStopping: [0mTraining stopped early as no improvement observed in last 150 epochs. Best results observed at epoch 56, best model saved as best.pt.
+To update EarlyStopping(patience=150) pass a new patience value, i.e. `patience=300` or use `patience=0` to disable EarlyStopping.
+
+206 epochs completed in 1.452 hours.
+Optimizer stripped from runs/detect/2024-08-28-22:51/step_1_finetune/weights/last.pt, 1.5MB
+Optimizer stripped from runs/detect/2024-08-28-22:51/step_1_finetune/weights/best.pt, 1.4MB
+
+Validating runs/detect/2024-08-28-22:51/step_1_finetune/weights/best.pt...
+Ultralytics YOLOv8.2.64 🚀 Python-3.9.19 torch-2.3.1+cu121 CUDA:0 (NVIDIA GeForce RTX 3070, 7966MiB)
+Model summary (fused): 185 layers, 297,663 parameters, 0 gradients, 1.5 GFLOPs
+                   all       1392       2579      0.154      0.177     0.0718     0.0345
+        Not Recyclable        182        261      0.333      0.046     0.0733     0.0294
+            Food waste        155        340      0.216      0.229      0.109     0.0571
+                 Glass        145        186      0.153     0.0484     0.0447     0.0171
+               Textile        164        192      0.146      0.583      0.142     0.0785
+                 Metal        229        302     0.0888      0.043     0.0385     0.0144
+                Wooden        148        189     0.0849      0.354     0.0423     0.0207
+               Leather        140        151      0.135      0.152        0.1     0.0447
+               Plastic        289        417      0.109       0.18     0.0547     0.0181
+               Ceramic        140        381       0.12     0.0761     0.0366     0.0201
+                 Paper        134        160      0.152     0.0561     0.0773     0.0455
+Speed: 0.1ms preprocess, 2.3ms inference, 0.0ms loss, 0.4ms postprocess per image
+Results saved to [1mruns/detect/2024-08-28-22:51/step_1_finetune[0m
+Ultralytics YOLOv8.2.64 🚀 Python-3.9.19 torch-2.3.1+cu121 CUDA:0 (NVIDIA GeForce RTX 3070, 7966MiB)
+Model summary (fused): 185 layers, 297,663 parameters, 0 gradients, 1.5 GFLOPs
+[34m[1mval: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/val/20210000051.jpg: corrupt JPEG restored and saved
+[34m[1mval: [0mWARNING ⚠️ /home/alex/Desktop/ultralytics/datasets/trash_detection_split/images/val/20210000061.jpg: corrupt JPEG restored and saved
+                   all       1392       2579      0.157      0.186     0.0728     0.0358
+        Not Recyclable        182        261      0.385     0.0383     0.0909     0.0306
+            Food waste        155        340      0.208      0.218      0.108     0.0614
+                 Glass        145        186      0.143     0.0484     0.0403     0.0177
+               Textile        164        192      0.136       0.63      0.125      0.071
+                 Metal        229        302     0.0682     0.0232     0.0337     0.0141
+                Wooden        148        189     0.0733      0.392     0.0571     0.0282
+               Leather        140        151      0.147      0.166     0.0962     0.0484
+               Plastic        289        417      0.116      0.156     0.0676     0.0266
+               Ceramic        140        381      0.111     0.0971     0.0298     0.0155
+                 Paper        134        160      0.187     0.0938     0.0793      0.045
+Speed: 0.2ms preprocess, 7.6ms inference, 0.0ms loss, 0.6ms postprocess per image
+Results saved to [1mruns/detect/2024-08-28-22:51/step_1_post_val[0m
+After fine tuning mAP=0.03583809341469211
+Ultralytics YOLOv8.2.64 🚀 Python-3.9.19 torch-2.3.1+cu121 CPU (12th Gen Intel Core(TM) i9-12900K)
+Model summary (fused): 185 layers, 297,663 parameters, 0 gradients, 1.5 GFLOPs
+
+[34m[1mPyTorch:[0m starting from 'runs/detect/2024-08-28-22:51/step_1_finetune/weights/best.pt' with input shape (1, 3, 640, 640) BCHW and output shape(s) (1, 14, 8400) (1.4 MB)
+
+[34m[1mONNX:[0m starting export with onnx 1.16.1 opset 17...
+[34m[1mONNX:[0m export success ✅ 0.2s, saved as 'runs/detect/2024-08-28-22:51/step_1_finetune/weights/best.onnx' (1.3 MB)
+
+Export complete (1.7s)
+Results saved to [1m/home/alex/Desktop/ultralytics/runs/detect/2024-08-28-22:51/step_1_finetune/weights[0m
+Predict:         yolo predict task=detect model=runs/detect/2024-08-28-22:51/step_1_finetune/weights/best.onnx imgsz=640  
+Validate:        yolo val task=detect model=runs/detect/2024-08-28-22:51/step_1_finetune/weights/best.onnx imgsz=640 data=my_datasets/trash-detect.yaml  
+Visualize:       https://netron.app
+Final model saved at: runs/detect/2024-08-28-22:51/step_1_finetune/weights/best.onnx
+--- Total runtime: 1:28:52.300304 (hours:min:sec) ---

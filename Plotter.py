@@ -13,7 +13,7 @@ class Plotter:
 
     def __init__(self):
         self._currentPlot = 0 # Plot index corresponding to current run
-        self._out_dir = "prune_results"
+        self._out_dir = "prune-results"
         if not os.path.exists(self._out_dir):
             os.makedirs(self._out_dir)
         self._filename = f"{self._out_dir}/pruning_perf_change"

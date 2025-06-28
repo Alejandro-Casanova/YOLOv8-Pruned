@@ -1,1 +1,0 @@
-del /Q my_models\*.onnx

@@ -170,11 +170,11 @@ calibration_*.npy
 
 # My stuff
 **/nohup.out
-prune_results/*
-selected_prune_results_recovered/*.png
-selected_runs/**/*.png
-selected_runs/**/*.jpg
-!selected_prune_results/*
+prune-results/*
+selected-prune-results-recovered/*.png
+selected-runs/**/*.png
+selected-runs/**/*.jpg
+!selected-prune-results/*
 
 .venv-2
 test.bat
