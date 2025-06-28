@@ -1,11 +1,21 @@
 import os
 import json
+import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import mplcursors
+import argparse
+
+# CLI arguments
+parser = argparse.ArgumentParser(description="Plot export results with selectable variables.")
+parser.add_argument('-x', type=str, default='FPS', help='Variable for x-axis (default: FPS)')
+parser.add_argument('-y', type=str, default='mAP50-95', help='Variable for y-axis (default: mAP50-95)')
+parser.add_argument('-c', '--cursor', action='store_true', help='Enable cursor for hover tooltips')
+parser.add_argument('-b', '--base_dir', type=str, default='my_models/sloppy_results', help='Base directory for results')
+args = parser.parse_args()
 
 # Set the base directory
-base_dir = "my_models/export_results"
+base_dir = args.base_dir
 
 # Collect data
 results = {}
@@ -21,6 +31,11 @@ for class_name in os.listdir(base_dir):
                 data = json.load(f)
             results[class_name][prune_rate] = data
 
+print(f"Collected results for {len(results)} classes from {base_dir}")
+
+# Pretty print first few results
+# print(results)
+
 # Prepare colormap
 class_names = list(results.keys())
 num_classes = len(class_names)
@@ -29,30 +44,32 @@ colors = [cmap(i / (num_classes + 1)) for i in range(1, num_classes + 1)]
 
 # Plotting
 for idx, (class_name, prunes) in enumerate(results.items()):
-    prune_rates = []
-    accuracies = []
+    x_vals = []
+    y_vals = []
     for prune_rate, data in sorted(prunes.items(), key=lambda x: float(x[0])):
-        prune_rates.append(data.get('FPS', 0))
-        accuracies.append(data.get('mAP50-95', 0))
-    plt.plot(prune_rates, accuracies, marker='o', label=class_name, color=colors[idx])
+        x_vals.append(data.get(args.x, 0))
+        y_vals.append(data.get(args.y, 0))
+    plt.plot(x_vals, y_vals, marker='o', label=class_name, color=colors[idx])
 
-plt.xlabel('FPS')
-plt.ylabel('mAP50-95')
-plt.title('mAP50-95 vs FPS')
+plt.xlabel(args.x)
+plt.ylabel(args.y)
+plt.title(f'{args.y} vs {args.x}')
 plt.legend()
 plt.grid(True)
-mplcursors.cursor(hover=True)
 
-# Add tooltips showing prune_rate value
-for idx, (class_name, prunes) in enumerate(results.items()):
-    prune_rates = []
-    accuracies = []
-    prune_rate_labels = []
-    for prune_rate, data in sorted(prunes.items(), key=lambda x: float(x[0])):
-        prune_rates.append(data.get('FPS', 0))
-        accuracies.append(data.get('mAP50-95', 0))
-        prune_rate_labels.append(prune_rate)
-    for x, y, label in zip(prune_rates, accuracies, prune_rate_labels):
-        plt.annotate(label, (x, y), textcoords="offset points", xytext=(0,5), ha='center', fontsize=8)
+if args.cursor:
+    mplcursors.cursor(hover=True)
+
+    # Add tooltips showing prune_rate value
+    for idx, (class_name, prunes) in enumerate(results.items()):
+        x_vals = []
+        y_vals = []
+        prune_rate_labels = []
+        for prune_rate, data in sorted(prunes.items(), key=lambda x: float(x[0])):
+            x_vals.append(data.get(args.x, 0))
+            y_vals.append(data.get(args.y, 0))
+            prune_rate_labels.append(prune_rate)
+        for x, y, label in zip(x_vals, y_vals, prune_rate_labels):
+            plt.annotate(label, (x, y), textcoords="offset points", xytext=(0,5), ha='center', fontsize=8)
 
 plt.show()
