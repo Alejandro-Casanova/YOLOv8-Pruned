@@ -1,7 +1,7 @@
 task: detect
 mode: train
 model: my-models/trash_yolov8n_pretrained.pt
-data: my_datasets/trash-detect.yaml
+data: my-datasets/trash-detect.yaml
 epochs: 300
 time: null
 patience: 150

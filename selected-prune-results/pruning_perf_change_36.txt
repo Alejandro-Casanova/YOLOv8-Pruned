@@ -42,7 +42,7 @@ Final Configuration:
  'copy_paste': 0.0,
  'cos_lr': False,
  'crop_fraction': 1.0,
- 'data': 'my_datasets/trash-detect.yaml',
+ 'data': 'my-datasets/trash-detect.yaml',
  'degrees': 0.0,
  'deterministic': True,
  'device': None,

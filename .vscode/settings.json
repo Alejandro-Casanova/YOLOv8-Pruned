@@ -20,6 +20,8 @@
         "imread",
         "imshow",
         "linestyle",
+        "markersize",
+        "mplcursors",
         "obdc",
         "OBDC",
         "pretraining",
