@@ -9,17 +9,17 @@ python yolov8-pruning.py --iterative-steps=2 # over 1% improved for iterative
 '
 
 : ' pruning_perf_change 16 (coco-minitrain-25k)
-python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml
+python yolov8-pruning.py --data=my-datasets/coco-minitrain-25k.yaml
 # Over 5% improved from using larger dataset
 '
 
 : ' pruning_perf_change 17 (coco-minitrain-25k) (twice as mamy epochs as before)
-python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml --prune-method=group_norm --epochs=200
+python yolov8-pruning.py --data=my-datasets/coco-minitrain-25k.yaml --prune-method=group_norm --epochs=200
 # Over 1% improved by using x2 epochs
 '
 
 : ' pruning_perf_change 18 (coco-minitrain-25k) (sparse learning, group_sl method) 100+100 epochs
-python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml
+python yolov8-pruning.py --data=my-datasets/coco-minitrain-25k.yaml
 # Initial drop in mAP, but end mAP is .5% better
 '
 
@@ -31,56 +31,56 @@ python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml
 Same as 18, no weight decay
 # .3% better, .15% better after sparse learn
 '
-# python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml --weight-decay=0.0
+# python yolov8-pruning.py --data=my-datasets/coco-minitrain-25k.yaml --weight-decay=0.0
 
 
 : ' pruning_perf_change 20 (coco-minitrain-25k) (sparse learning, group_sl method) 
 Same as 18, smaller reg coef
 # .05% worse, .09% better after sparse learn (leave coefficient as it was)
 '
-# python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml --reg=1e-5
+# python yolov8-pruning.py --data=my-datasets/coco-minitrain-25k.yaml --reg=1e-5
 
 
 : ' pruning_perf_change 21 (coco-minitrain-25k) (sparse learning, group_sl method) 
 19 and 20 together
 # .7% better than 20 and .3% better than 19 (actually best option!!)
 '
-# python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml --reg=1e-5 --weight-decay=0.0
+# python yolov8-pruning.py --data=my-datasets/coco-minitrain-25k.yaml --reg=1e-5 --weight-decay=0.0
 
 
 : ' pruning_perf_change 22 (coco-minitrain-25k)
 Same as 18, half batch size
 # .4% worse and 20 minutes slower
 '
-# python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml --batch=16
+# python yolov8-pruning.py --data=my-datasets/coco-minitrain-25k.yaml --batch=16
 
 
 : ' pruning_perf_change 23 (coco-minitrain-25k)
 Same as 17, twice the epochs
 # Over .7% better
 '
-# python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml --prune-method=group_norm --epochs=400
+# python yolov8-pruning.py --data=my-datasets/coco-minitrain-25k.yaml --prune-method=group_norm --epochs=400
 
 
 : ' pruning_perf_change 24 (coco-minitrain-25k)
 Same as 17, no lr decay
 # Over 1% WORSE
 '
-# python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml --prune-method=group_norm --epochs=200 --lrf=1.0
+# python yolov8-pruning.py --data=my-datasets/coco-minitrain-25k.yaml --prune-method=group_norm --epochs=200 --lrf=1.0
 
 
 : ' pruning_perf_change 25 (coco-minitrain-25k)
 Same as 17, no data augmentation
 # Around 9% WORSE!!!! WOW (Will there be so much difference with full dataset?)
 '
-# python yolov8-pruning.py --cfg-file=my-config-files/no_augment.yaml --data=my_datasets/coco-minitrain-25k.yaml --prune-method=group_norm --epochs=200
+# python yolov8-pruning.py --cfg-file=my-config-files/no_augment.yaml --data=my-datasets/coco-minitrain-25k.yaml --prune-method=group_norm --epochs=200
 
 
 : ' pruning_perf_change 26 (coco-minitrain-25k) 
 Same as 17, but iterative (equivalent epochs)
 # Around .1% worse hummmm... And 1hr longer runtime
 '
-# python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml --prune-method=group_norm --epochs=50 --iterative-steps=4
+# python yolov8-pruning.py --data=my-datasets/coco-minitrain-25k.yaml --prune-method=group_norm --epochs=50 --iterative-steps=4
 
 
 : ' pruning_perf_change 27 (coco full dataset) 
@@ -106,7 +106,7 @@ Same as 27, constant lr
 Same as 17 but 8 worker threads for dataloaders
 # Around .3% better? Normal deviation between runs? Runtime is the same => FIX workers=8
 '
-# python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml --prune-method=group_norm --epochs=200 --workers=8
+# python yolov8-pruning.py --data=my-datasets/coco-minitrain-25k.yaml --prune-method=group_norm --epochs=200 --workers=8
 
 
 : '
@@ -116,12 +116,12 @@ Same as 17 but 8 worker threads for dataloaders
 : ' pruning_perf_change 31 (coco-minitrain-25k)
 Group-sl, 50+50 epochs, baseline for batch size analysis (batch=32)
 '
-# python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml --epochs=50
+# python yolov8-pruning.py --data=my-datasets/coco-minitrain-25k.yaml --epochs=50
 
 : ' pruning_perf_change 32 (coco-minitrain-25k)
 Same as 31, half batch size
 # Same precision and runtime (not better or worse)
 '
-# python yolov8-pruning.py --data=my_datasets/coco-minitrain-25k.yaml --epochs=50 --batch=32
+# python yolov8-pruning.py --data=my-datasets/coco-minitrain-25k.yaml --epochs=50 --batch=32
 
 # Following runs with bigger batch sizes crashed from CUDA out of memory

@@ -39,7 +39,7 @@ if __name__ == "__main__":
         optimize=args.optimize,
         int8=args.quantize,
         simplify=args.optimize,
-        data="my_datasets/trash-detect.yaml"
+        data="my-datasets/trash-detect.yaml"
     )
     
     if args.format == "onnx" and args.quantize:
