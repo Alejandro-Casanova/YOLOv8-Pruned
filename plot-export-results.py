@@ -72,13 +72,20 @@ for idx, (class_name, prunes) in enumerate(results.items()):
     x_vals = []
     y_vals = []
     for prune_rate, data in sorted(prunes.items(), key=lambda x: float(x[0])):
-        x_vals.append(data.get(args.x, 0))
-        y_vals.append(data.get(args.y, 0))
+        x_val = data.get(args.x, 0)
+        y_val = data.get(args.y, 0)
+        if args.percentage:
+            if 'mAP' in args.x:
+                x_val *= 100
+            if 'mAP' in args.y:
+                y_val *= 100
+        x_vals.append(x_val)
+        y_vals.append(y_val)
     plt.plot(x_vals, y_vals, marker='o', label=class_name, color=colors[idx], markersize=4)
 
 plt.xlabel(label_names[args.x])
 plt.ylabel(label_names[args.y])
-plt.title(f'{label_names_for_title[args.y]} vs {label_names_for_title[args.x]}')
+plt.title(f'{label_names_for_title[args.y]} vs. {label_names_for_title[args.x]}', fontweight='bold')
 
 # Reorder legend handles and labels
 handles, labels = plt.gca().get_legend_handles_labels()
@@ -96,8 +103,15 @@ if args.cursor:
         y_vals = []
         prune_rate_labels = []
         for prune_rate, data in sorted(prunes.items(), key=lambda x: float(x[0])):
-            x_vals.append(data.get(args.x, 0))
-            y_vals.append(data.get(args.y, 0))
+            x_val = data.get(args.x, 0)
+            y_val = data.get(args.y, 0)
+            if args.percentage:
+                if 'mAP' in args.x:
+                    x_val *= 100
+                if 'mAP' in args.y:
+                    y_val *= 100
+            x_vals.append(x_val)
+            y_vals.append(y_val)
             prune_rate_labels.append(prune_rate)
         for x, y, label in zip(x_vals, y_vals, prune_rate_labels):
             plt.annotate(label, (x, y), textcoords="offset points", xytext=(0,5), ha='center', fontsize=6)
@@ -107,11 +121,17 @@ if args.axis_limits:
     if args.x == 'FPS':
         plt.xlim(0, 60)
         if args.y == 'mAP50':
-            plt.ylim(0.4, 0.95)
+            if args.percentage:
+                plt.ylim(40, 95)
+            else:
+                plt.ylim(0.4, 0.95)
     elif args.x == 'model_size_kb':
         plt.xlim(500, 4000)
         if args.y == 'mAP50':
-            plt.ylim(0.0, 0.95)
+            if args.percentage:
+                plt.ylim(0, 95)
+            else:
+                plt.ylim(0.0, 0.95)
 
 if args.save_fig or args.table:
     # Save the plot as an eps file
