@@ -1,0 +1,23 @@
+\begin{table}[h]
+\centering
+\caption[Velocidad del modelo exportado.] % For LOF
+{Velocidad del modelo exportado (FPS) para diferentes tamaños de imagen, cuantización y ratios de poda.}
+\label{tab:exported-fps}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{cccccccccc}
+\multicolumn{10}{c}{Velocidad del modelo exportado (FPS)} \\
+\toprule
+\multirow{2}{*}{clase} &  \multicolumn{8}{c}{ratio de poda (\%)}  \\ \cline{2-10}
+& 00 & 10 & 20 & 30 & 50 & 60 & 70 & 80 & 90 \\
+\midrule
+imgsz640 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 2.2 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 2.3 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 2.6 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 2.6 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 3.5 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 4.0 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 4.7 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 6.2 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 9.4 \\
+imgsz640\_q8 & {\cellcolor[HTML]{F2F8FD}} \color[HTML]{000000} 3.4 & {\cellcolor[HTML]{F2F8FD}} \color[HTML]{000000} 3.6 & {\cellcolor[HTML]{F2F8FD}} \color[HTML]{000000} 3.9 & {\cellcolor[HTML]{F2F8FD}} \color[HTML]{000000} 4.1 & {\cellcolor[HTML]{F3F8FE}} \color[HTML]{000000} 4.9 & {\cellcolor[HTML]{F3F8FE}} \color[HTML]{000000} 5.6 & {\cellcolor[HTML]{F3F8FE}} \color[HTML]{000000} 6.6 & {\cellcolor[HTML]{F3F8FE}} \color[HTML]{000000} 8.1 & {\cellcolor[HTML]{F5FAFE}} \color[HTML]{000000} 10.4 \\
+imgsz480 & {\cellcolor[HTML]{F1F7FD}} \color[HTML]{000000} 3.7 & {\cellcolor[HTML]{F0F6FD}} \color[HTML]{000000} 4.1 & {\cellcolor[HTML]{F0F6FD}} \color[HTML]{000000} 4.5 & {\cellcolor[HTML]{EEF5FC}} \color[HTML]{000000} 5.0 & {\cellcolor[HTML]{EFF6FC}} \color[HTML]{000000} 6.2 & {\cellcolor[HTML]{F0F6FD}} \color[HTML]{000000} 6.7 & {\cellcolor[HTML]{EFF6FC}} \color[HTML]{000000} 8.2 & {\cellcolor[HTML]{EEF5FC}} \color[HTML]{000000} 10.8 & {\cellcolor[HTML]{EBF3FB}} \color[HTML]{000000} 16.4 \\
+imgsz480\_q8 & {\cellcolor[HTML]{E7F0FA}} \color[HTML]{000000} 6.0 & {\cellcolor[HTML]{E7F1FA}} \color[HTML]{000000} 6.2 & {\cellcolor[HTML]{E7F1FA}} \color[HTML]{000000} 6.8 & {\cellcolor[HTML]{E7F0FA}} \color[HTML]{000000} 7.3 & {\cellcolor[HTML]{E7F1FA}} \color[HTML]{000000} 8.7 & {\cellcolor[HTML]{E7F1FA}} \color[HTML]{000000} 9.9 & {\cellcolor[HTML]{E7F0FA}} \color[HTML]{000000} 11.6 & {\cellcolor[HTML]{E7F0FA}} \color[HTML]{000000} 14.1 & {\cellcolor[HTML]{E8F1FA}} \color[HTML]{000000} 17.9 \\
+imgsz320 & {\cellcolor[HTML]{DEEBF7}} \color[HTML]{000000} 8.0 & {\cellcolor[HTML]{DCE9F6}} \color[HTML]{000000} 9.0 & {\cellcolor[HTML]{DAE8F6}} \color[HTML]{000000} 10.2 & {\cellcolor[HTML]{DAE8F6}} \color[HTML]{000000} 10.7 & {\cellcolor[HTML]{D9E7F5}} \color[HTML]{000000} 13.5 & {\cellcolor[HTML]{D9E7F5}} \color[HTML]{000000} 15.3 & {\cellcolor[HTML]{D8E7F5}} \color[HTML]{000000} 18.1 & {\cellcolor[HTML]{D2E3F3}} \color[HTML]{000000} 24.4 & {\cellcolor[HTML]{C7DCEF}} \color[HTML]{000000} 36.8 \\
+imgsz320\_q8 & {\cellcolor[HTML]{C7DBEF}} \color[HTML]{000000} 13.3 & {\cellcolor[HTML]{C8DCF0}} \color[HTML]{000000} 13.8 & {\cellcolor[HTML]{C8DCF0}} \color[HTML]{000000} 15.1 & {\cellcolor[HTML]{C7DBEF}} \color[HTML]{000000} 16.2 & {\cellcolor[HTML]{C7DCEF}} \color[HTML]{000000} 19.5 & {\cellcolor[HTML]{C7DBEF}} \color[HTML]{000000} 22.4 & {\cellcolor[HTML]{C6DBEF}} \color[HTML]{000000} 25.9 & {\cellcolor[HTML]{C3DAEE}} \color[HTML]{000000} 31.1 & {\cellcolor[HTML]{C7DBEF}} \color[HTML]{000000} 37.2 \\
+imgsz160 & {\cellcolor[HTML]{6AAED6}} \color[HTML]{000000} 24.7 & {\cellcolor[HTML]{4A98C9}} \color[HTML]{FFFFFF} 31.1 & {\cellcolor[HTML]{4896C8}} \color[HTML]{FFFFFF} 34.2 & {\cellcolor[HTML]{4292C6}} \color[HTML]{FFFFFF} 36.9 & {\cellcolor[HTML]{3787C0}} \color[HTML]{FFFFFF} 47.0 & {\cellcolor[HTML]{3383BE}} \color[HTML]{FFFFFF} 54.5 & {\cellcolor[HTML]{3181BD}} \color[HTML]{FFFFFF} 62.7 & {\cellcolor[HTML]{1764AB}} \color[HTML]{FFFFFF} 82.4 & {\cellcolor[HTML]{083471}} \color[HTML]{FFFFFF} 119.7 \\
+imgsz160\_q8 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 47.2 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 50.4 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 54.7 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 57.7 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 68.9 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 78.0 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 88.6 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 101.5 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 121.7 \\
+\bottomrule
+\end{tabular}}
+\end{table}

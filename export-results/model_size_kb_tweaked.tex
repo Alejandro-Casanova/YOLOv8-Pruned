@@ -1,0 +1,23 @@
+\begin{table}[h]
+\centering
+\caption[Tamaño del modelo exportado.] % For LOF
+{Tamaño del modelo exportado en kilobytes (KB) para diferentes tamaños de imagen, cuantización y ratios de poda.}
+\label{tab:exported-size}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ccccccc}
+\multicolumn{10}{c}{Tamaño del modelo exportado (KB)} \\
+\toprule
+\multirow{2}{*}{clase} &  \multicolumn{8}{c}{ratio de poda (\%)}  \\ \cline{2-10}
+& 00 & 10 & 20 & 30 & 50 & 60 & 70 & 80 & 90 \\
+\midrule
+imgsz640 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 11970 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 10782 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 9496 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 8437 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 6065 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 4895 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 3722 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 2532 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 1388 \\
+imgsz640\_q8 & {\cellcolor[HTML]{F4F9FE}} \color[HTML]{000000} 3358 & {\cellcolor[HTML]{F3F8FE}} \color[HTML]{000000} 3076 & {\cellcolor[HTML]{F3F8FE}} \color[HTML]{000000} 2753 & {\cellcolor[HTML]{F2F8FD}} \color[HTML]{000000} 2488 & {\cellcolor[HTML]{F0F6FD}} \color[HTML]{000000} 1893 & {\cellcolor[HTML]{EEF5FC}} \color[HTML]{000000} 1599 & {\cellcolor[HTML]{EBF3FB}} \color[HTML]{000000} 1304 & {\cellcolor[HTML]{E5EFF9}} \color[HTML]{000000} 1005 & {\cellcolor[HTML]{D3E3F3}} \color[HTML]{000000} 716 \\
+imgsz480 & {\cellcolor[HTML]{08326E}} \color[HTML]{FFFFFF} 11898 & {\cellcolor[HTML]{08326E}} \color[HTML]{FFFFFF} 10711 & {\cellcolor[HTML]{08326E}} \color[HTML]{FFFFFF} 9424 & {\cellcolor[HTML]{08326E}} \color[HTML]{FFFFFF} 8366 & {\cellcolor[HTML]{083471}} \color[HTML]{FFFFFF} 5994 & {\cellcolor[HTML]{083573}} \color[HTML]{FFFFFF} 4823 & {\cellcolor[HTML]{083776}} \color[HTML]{FFFFFF} 3650 & {\cellcolor[HTML]{083A7A}} \color[HTML]{FFFFFF} 2460 & {\cellcolor[HTML]{08478D}} \color[HTML]{FFFFFF} 1316 \\
+imgsz480\_q8 & {\cellcolor[HTML]{F5FAFE}} \color[HTML]{000000} 3286 & {\cellcolor[HTML]{F5FAFE}} \color[HTML]{000000} 3004 & {\cellcolor[HTML]{F5F9FE}} \color[HTML]{000000} 2682 & {\cellcolor[HTML]{F5F9FE}} \color[HTML]{000000} 2416 & {\cellcolor[HTML]{F4F9FE}} \color[HTML]{000000} 1821 & {\cellcolor[HTML]{F2F8FD}} \color[HTML]{000000} 1527 & {\cellcolor[HTML]{F1F7FD}} \color[HTML]{000000} 1233 & {\cellcolor[HTML]{EEF5FC}} \color[HTML]{000000} 933 & {\cellcolor[HTML]{E3EEF9}} \color[HTML]{000000} 644 \\
+imgsz320 & {\cellcolor[HTML]{083370}} \color[HTML]{FFFFFF} 11847 & {\cellcolor[HTML]{083471}} \color[HTML]{FFFFFF} 10659 & {\cellcolor[HTML]{083471}} \color[HTML]{FFFFFF} 9372 & {\cellcolor[HTML]{083573}} \color[HTML]{FFFFFF} 8314 & {\cellcolor[HTML]{083776}} \color[HTML]{FFFFFF} 5942 & {\cellcolor[HTML]{083979}} \color[HTML]{FFFFFF} 4772 & {\cellcolor[HTML]{083C7D}} \color[HTML]{FFFFFF} 3599 & {\cellcolor[HTML]{084387}} \color[HTML]{FFFFFF} 2409 & {\cellcolor[HTML]{0D57A1}} \color[HTML]{FFFFFF} 1265 \\
+imgsz320\_q8 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 3235 & {\cellcolor[HTML]{F6FAFF}} \color[HTML]{000000} 2953 & {\cellcolor[HTML]{F6FAFF}} \color[HTML]{000000} 2630 & {\cellcolor[HTML]{F6FAFF}} \color[HTML]{000000} 2365 & {\cellcolor[HTML]{F6FAFF}} \color[HTML]{000000} 1770 & {\cellcolor[HTML]{F5FAFE}} \color[HTML]{000000} 1476 & {\cellcolor[HTML]{F5FAFE}} \color[HTML]{000000} 1181 & {\cellcolor[HTML]{F4F9FE}} \color[HTML]{000000} 882 & {\cellcolor[HTML]{F0F6FD}} \color[HTML]{000000} 593 \\
+imgsz160 & {\cellcolor[HTML]{083471}} \color[HTML]{FFFFFF} 11816 & {\cellcolor[HTML]{083471}} \color[HTML]{FFFFFF} 10629 & {\cellcolor[HTML]{083573}} \color[HTML]{FFFFFF} 9342 & {\cellcolor[HTML]{083674}} \color[HTML]{FFFFFF} 8284 & {\cellcolor[HTML]{083979}} \color[HTML]{FFFFFF} 5912 & {\cellcolor[HTML]{083B7C}} \color[HTML]{FFFFFF} 4741 & {\cellcolor[HTML]{084082}} \color[HTML]{FFFFFF} 3568 & {\cellcolor[HTML]{08488E}} \color[HTML]{FFFFFF} 2378 & {\cellcolor[HTML]{1460A8}} \color[HTML]{FFFFFF} 1234 \\
+imgsz160\_q8 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 3204 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 2922 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 2600 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 2334 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 1739 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 1445 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 1151 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 851 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 562 \\
+\bottomrule
+\end{tabular}}
+\end{table}

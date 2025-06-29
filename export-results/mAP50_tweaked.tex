@@ -1,0 +1,23 @@
+\begin{table}[h]
+\centering
+\caption[Precisión del modelo exportado.] % For LOF
+{Precisión mAP50 (\%) del modelo exportado para diferentes tamaños de imagen, cuantización y ratios de poda.}
+\label{tab:exported-mAP50}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{cccccccccc}
+\multicolumn{10}{c}{Precisión mAP50 del modelo exportado (\%)} \\
+\toprule
+\multirow{2}{*}{clase} &  \multicolumn{8}{c}{ratio de poda (\%)}  \\ \cline{2-10}
+& 00 & 10 & 20 & 30 & 50 & 60 & 70 & 80 & 90 \\
+\midrule
+imgsz640 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 92.1 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 92.7 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 91.2 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 90.6 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 81.8 & {\cellcolor[HTML]{083776}} \color[HTML]{FFFFFF} 73.0 & {\cellcolor[HTML]{083370}} \color[HTML]{FFFFFF} 63.0 & {\cellcolor[HTML]{083979}} \color[HTML]{FFFFFF} 44.4 & {\cellcolor[HTML]{3484BF}} \color[HTML]{FFFFFF} 6.9 \\
+imgsz640\_q8 & {\cellcolor[HTML]{08509B}} \color[HTML]{FFFFFF} 88.2 & {\cellcolor[HTML]{084D96}} \color[HTML]{FFFFFF} 89.5 & {\cellcolor[HTML]{08509B}} \color[HTML]{FFFFFF} 86.6 & {\cellcolor[HTML]{0A549E}} \color[HTML]{FFFFFF} 85.2 & {\cellcolor[HTML]{084990}} \color[HTML]{FFFFFF} 77.8 & {\cellcolor[HTML]{08519C}} \color[HTML]{FFFFFF} 69.2 & {\cellcolor[HTML]{3888C1}} \color[HTML]{FFFFFF} 49.9 & {\cellcolor[HTML]{66ABD4}} \color[HTML]{FFFFFF} 29.3 & {\cellcolor[HTML]{DAE8F6}} \color[HTML]{000000} 5.1 \\
+imgsz480 & {\cellcolor[HTML]{083370}} \color[HTML]{FFFFFF} 91.7 & {\cellcolor[HTML]{08316D}} \color[HTML]{FFFFFF} 92.5 & {\cellcolor[HTML]{083471}} \color[HTML]{FFFFFF} 90.5 & {\cellcolor[HTML]{083573}} \color[HTML]{FFFFFF} 89.7 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 81.8 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 74.1 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 63.6 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 45.6 & {\cellcolor[HTML]{08306B}} \color[HTML]{FFFFFF} 8.0 \\
+imgsz480\_q8 & {\cellcolor[HTML]{084E98}} \color[HTML]{FFFFFF} 88.4 & {\cellcolor[HTML]{08468B}} \color[HTML]{FFFFFF} 90.3 & {\cellcolor[HTML]{084F99}} \color[HTML]{FFFFFF} 86.7 & {\cellcolor[HTML]{08468B}} \color[HTML]{FFFFFF} 87.3 & {\cellcolor[HTML]{084C95}} \color[HTML]{FFFFFF} 77.3 & {\cellcolor[HTML]{084082}} \color[HTML]{FFFFFF} 71.7 & {\cellcolor[HTML]{115CA5}} \color[HTML]{FFFFFF} 56.8 & {\cellcolor[HTML]{2E7EBC}} \color[HTML]{FFFFFF} 35.6 & {\cellcolor[HTML]{CFE1F2}} \color[HTML]{000000} 5.3 \\
+imgsz320 & {\cellcolor[HTML]{08488E}} \color[HTML]{FFFFFF} 89.2 & {\cellcolor[HTML]{084E98}} \color[HTML]{FFFFFF} 89.4 & {\cellcolor[HTML]{084D96}} \color[HTML]{FFFFFF} 87.1 & {\cellcolor[HTML]{0A539E}} \color[HTML]{FFFFFF} 85.4 & {\cellcolor[HTML]{0E59A2}} \color[HTML]{FFFFFF} 75.1 & {\cellcolor[HTML]{105BA4}} \color[HTML]{FFFFFF} 67.7 & {\cellcolor[HTML]{135FA7}} \color[HTML]{FFFFFF} 56.2 & {\cellcolor[HTML]{1865AC}} \color[HTML]{FFFFFF} 38.8 & {\cellcolor[HTML]{083776}} \color[HTML]{FFFFFF} 7.9 \\
+imgsz320\_q8 & {\cellcolor[HTML]{1A68AE}} \color[HTML]{FFFFFF} 85.2 & {\cellcolor[HTML]{115CA5}} \color[HTML]{FFFFFF} 87.8 & {\cellcolor[HTML]{1D6CB1}} \color[HTML]{FFFFFF} 82.6 & {\cellcolor[HTML]{1D6CB1}} \color[HTML]{FFFFFF} 81.5 & {\cellcolor[HTML]{2171B5}} \color[HTML]{FFFFFF} 71.1 & {\cellcolor[HTML]{2373B6}} \color[HTML]{FFFFFF} 64.1 & {\cellcolor[HTML]{3181BD}} \color[HTML]{FFFFFF} 51.1 & {\cellcolor[HTML]{529DCC}} \color[HTML]{FFFFFF} 31.4 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 4.6 \\
+imgsz160 & {\cellcolor[HTML]{D9E8F5}} \color[HTML]{000000} 65.2 & {\cellcolor[HTML]{E1EDF8}} \color[HTML]{000000} 66.8 & {\cellcolor[HTML]{D2E3F3}} \color[HTML]{000000} 60.9 & {\cellcolor[HTML]{DBE9F6}} \color[HTML]{000000} 57.2 & {\cellcolor[HTML]{E4EFF9}} \color[HTML]{000000} 43.6 & {\cellcolor[HTML]{F0F6FD}} \color[HTML]{000000} 37.1 & {\cellcolor[HTML]{E8F1FA}} \color[HTML]{000000} 26.3 & {\cellcolor[HTML]{E6F0F9}} \color[HTML]{000000} 15.1 & {\cellcolor[HTML]{F2F7FD}} \color[HTML]{000000} 4.7 \\
+imgsz160\_q8 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 60.5 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 63.6 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 53.9 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 51.7 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 39.6 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 35.6 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 23.2 & {\cellcolor[HTML]{F7FBFF}} \color[HTML]{000000} 12.2 & {\cellcolor[HTML]{E6F0F9}} \color[HTML]{000000} 4.9 \\
+\bottomrule
+\end{tabular}}
+\end{table}
