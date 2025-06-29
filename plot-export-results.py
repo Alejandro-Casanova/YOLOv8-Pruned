@@ -8,21 +8,21 @@ import mplcursors
 import argparse
 
 label_names = {
-    'FPS': 'FPS',
-    'mAP50-95': 'mAP50-95 (%)',
-    'mAP50': 'mAP50 (%)',
-    'mAP75': 'mAP75 (%)',
-    'model_size_kb': 'Model Size (KB)',
-    'inference speed (ms)': 'Inference Speed (ms)',
+    'FPS': 'Velocidad de inferencia (FPS)',
+    'mAP50-95': 'Precisión mAP50-95 (%)',
+    'mAP50': 'Precisión mAP50 (%)',
+    'mAP75': 'Precisión mAP75 (%)',
+    'model_size_kb': 'Tamaño del modelo (KB)',
+    'inference speed (ms)': 'Tiempo de inferencia (ms)',
 }
 
 label_names_for_title = {
-    'FPS': 'FPS',
-    'mAP50-95': 'mAP50-95',
-    'mAP50': 'mAP50',
-    'mAP75': 'mAP75',
-    'model_size_kb': 'Model Size',
-    'inference speed (ms)': 'Inference Speed',
+    'FPS': 'Velocidad de inferencia',
+    'mAP50-95': 'Precisión mAP50-95',
+    'mAP50': 'Precisión mAP50',
+    'mAP75': 'Precisión mAP75',
+    'model_size_kb': 'Tamaño del modelo',
+    'inference speed (ms)': 'Tiempo de inferencia',
 }
 
 # CLI arguments
