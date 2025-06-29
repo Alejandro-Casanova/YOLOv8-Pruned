@@ -12,7 +12,7 @@ label_names = {
     'mAP50-95': 'Precisión mAP50-95 (%)',
     'mAP50': 'Precisión mAP50 (%)',
     'mAP75': 'Precisión mAP75 (%)',
-    'model_size_kb': 'Tamaño del modelo (KB)',
+    'model_size_kb': 'Tamaño del modelo (kB)',
     'inference speed (ms)': 'Tiempo de inferencia (ms)',
 }
 
