@@ -178,3 +178,6 @@ selected-runs/**/*.jpg
 
 .venv-2
 test.bat
+
+my-models/**/variables
+my-models/**/metadata.yaml

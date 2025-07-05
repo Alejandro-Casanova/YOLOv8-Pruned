@@ -15,6 +15,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="YOLOv8 validation and training script")
     parser.add_argument('-d', '--dataset', type=str, default="my-config-files/trash_config.yaml", help='Path to dataset config YAML')
     parser.add_argument('-m', '--model', type=str, required=True, help='Path to YOLOv8 model weights')
+    parser.add_argument('-o', '--output', type=str, default='my-models/export_results', help='Output directory for results')
     # parser.add_argument('-i', '--imgsz', type=int, default=640, help='Image size for validation')
 
     args = parser.parse_args()
@@ -22,9 +23,16 @@ if __name__ == "__main__":
     # Extract model class from suffix (e.g., imgsz320_quant8)
     a = args.model.split('.')[-2]
     b = a.split('_')
-    img_size = int(b[3].replace('imgsz', '')) if 'imgsz' in b[3] else 640  # Default to 640 if not specified
-    model_class = b[3] + '_' + b[4] if len(b) > 4 else b[3] 
-    prune_rate = b[2]
+    # print(f"Model class: {b}")
+    # sys.exit()
+    if 'tflite' in args.model:
+        img_size = int(b[2].replace('imgsz', '')) if 'imgsz' in b[2] else 640  # Default to 640 if not specified
+        model_class = b[2] + '_' + b[5] if len(b) > 5 else b[2] 
+        prune_rate = b[1]
+    else:
+        img_size = int(b[3].replace('imgsz', '')) if 'imgsz' in b[3] else 640  # Default to 640 if not specified
+        model_class = b[3] + '_' + b[4] if len(b) > 4 else b[3] 
+        prune_rate = b[2]
     
     # Load Config
     cfg = yaml_load(check_yaml(args.dataset))
@@ -67,8 +75,9 @@ if __name__ == "__main__":
         'model_class': model_class,
     }
 
-    os.makedirs(f'my-models/export_results/{model_class}', exist_ok=True)
-    with open(f'my-models/export_results/{model_class}/{prune_rate}.json', 'w') as f:
+    output_dir = os.path.join(args.output, model_class)
+    os.makedirs(output_dir, exist_ok=True)
+    with open(os.path.join(output_dir, f'{prune_rate}.json'), 'w') as f:
         json.dump(results, f, indent=4)
     sys.exit()
 
