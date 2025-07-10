@@ -7,7 +7,7 @@ import numpy as np
 import mplcursors
 import argparse
 
-label_names = {
+label_names_spanish = {
     'FPS': 'Velocidad de inferencia (FPS)',
     'mAP50-95': 'Precisión mAP50-95 (%)',
     'mAP50': 'Precisión mAP50 (%)',
@@ -16,13 +16,31 @@ label_names = {
     'inference speed (ms)': 'Tiempo de inferencia (ms)',
 }
 
-label_names_for_title = {
+label_names_for_title_spanish = {
     'FPS': 'Velocidad de inferencia',
     'mAP50-95': 'Precisión mAP50-95',
     'mAP50': 'Precisión mAP50',
     'mAP75': 'Precisión mAP75',
     'model_size_kb': 'Tamaño del modelo',
     'inference speed (ms)': 'Tiempo de inferencia',
+}
+
+label_names_english = {
+    'FPS': 'Inference Speed (FPS)',
+    'mAP50-95': 'mAP50-95 Accuracy (%)',
+    'mAP50': 'mAP50 Accuracy (%)',
+    'mAP75': 'mAP75 Accuracy (%)',
+    'model_size_kb': 'Model Size (kB)',
+    'inference speed (ms)': 'Inference Speed (ms)',
+}
+
+label_names_for_title_english = {
+    'FPS': 'Inference Speed',
+    'mAP50-95': 'mAP50-95 Accuracy',
+    'mAP50': 'mAP50 Accuracy',
+    'mAP75': 'mAP75 Accuracy',
+    'model_size_kb': 'Model Size',
+    'inference speed (ms)': 'Inference Speed',
 }
 
 # CLI arguments
@@ -37,6 +55,9 @@ parser.add_argument('-a', '--axis_limits', action='store_true', help='Set axis l
 parser.add_argument('-t', '--table', action='store_true', help='Print results in a table format')
 parser.add_argument('-d', '--decimals', action='store_true', help='Show results in table with one decimal place') 
 parser.add_argument('-p', '--percentage', action='store_true', help='Show results in table as percentages')
+parser.add_argument('-sp', '--spanish', action='store_true', help='Use Spanish labels and titles')
+parser.add_argument('-f', '--format', type=str, default='eps', help='Format for saving the figure (default: eps)')
+
 args = parser.parse_args()
 
 # Set the base directory
@@ -82,6 +103,9 @@ for idx, (class_name, prunes) in enumerate(results.items()):
         x_vals.append(x_val)
         y_vals.append(y_val)
     plt.plot(x_vals, y_vals, marker='o', label=class_name, color=colors[idx], markersize=4)
+
+label_names = label_names_spanish if args.spanish else label_names_english
+label_names_for_title = label_names_for_title_spanish if args.spanish else label_names_for_title_english
 
 plt.xlabel(label_names[args.x])
 plt.ylabel(label_names[args.y])
@@ -143,9 +167,9 @@ if args.save_fig or args.table:
     )
     
 if args.save_fig:
-    output_path_fig = output_path + ".eps"
+    output_path_fig = output_path + f".{args.format}"
     plt.gcf().set_size_inches(11.06, 5.49)  # Set figure dimensions (width, height) in inches
-    plt.savefig(output_path_fig, format='eps', dpi=300, bbox_inches='tight')
+    plt.savefig(output_path_fig, format=args.format, dpi=300, bbox_inches='tight')
 
 if args.interactive:
     plt.show()
