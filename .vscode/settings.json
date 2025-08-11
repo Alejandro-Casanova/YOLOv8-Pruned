@@ -39,6 +39,7 @@
         "tflite",
         "twinx",
         "Ultralytics",
+        "venv",
         "viridis",
         "wdir",
         "xaxis",
